@@ -5,24 +5,26 @@ import (
 	"os"
 	"testing"
 
+	helpers "github.com/LMaxence/gookme/packages/test-helpers"
+
 	"github.com/stretchr/testify/assert"
 )
 
 func TestGetStagedFiles(t *testing.T) {
 	// Create a temporary directory
-	temporaryDirectory, err := setupTmpGit()
+	tmpDir, err := helpers.SetupTmpGit()
 	assert.NoError(t, err)
 
 	// Create a file
-	_, err = execCommandAtPath(&temporaryDirectory, "touch", "file1")
+	_, err = execCommandAtPath(&tmpDir, "touch", "file1")
 	assert.NoError(t, err)
 
 	// Stage the file
-	_, err = execCommandAtPath(&temporaryDirectory, "git", "add", ".")
+	_, err = execCommandAtPath(&tmpDir, "git", "add", ".")
 	assert.NoError(t, err)
 
 	// Call the function
-	files, err := GetStagedFiles(&temporaryDirectory)
+	files, err := GetStagedFiles(&tmpDir)
 
 	// Assert the results
 	assert.NoError(t, err)
@@ -31,15 +33,15 @@ func TestGetStagedFiles(t *testing.T) {
 
 func TestGetStagedFilesWithNoStagedFiles(t *testing.T) {
 	// Create a temporary directory
-	temporaryDirectory, err := setupTmpGit()
+	tmpDir, err := helpers.SetupTmpGit()
 	assert.NoError(t, err)
 
 	// Create a file
-	_, err = execCommandAtPath(&temporaryDirectory, "touch", "file1")
+	_, err = execCommandAtPath(&tmpDir, "touch", "file1")
 	assert.NoError(t, err)
 
 	// Call the function
-	files, err := GetStagedFiles(&temporaryDirectory)
+	files, err := GetStagedFiles(&tmpDir)
 
 	// Assert the results
 	assert.NoError(t, err)
@@ -48,19 +50,19 @@ func TestGetStagedFilesWithNoStagedFiles(t *testing.T) {
 
 func TestGetNotStagedFiles(t *testing.T) {
 	// Create a temporary directory
-	temporaryDirectory, err := setupTmpGit()
+	tmpDir, err := helpers.SetupTmpGit()
 	assert.NoError(t, err)
 
 	// Create a file
-	_, err = execCommandAtPath(&temporaryDirectory, "touch", "file1")
+	_, err = execCommandAtPath(&tmpDir, "touch", "file1")
 	assert.NoError(t, err)
 
 	// Stage the file and then modify it
-	_, err = execCommandAtPath(&temporaryDirectory, "git", "add", ".")
+	_, err = execCommandAtPath(&tmpDir, "git", "add", ".")
 	assert.NoError(t, err)
 
 	// Write "test" to the file
-	file, err := os.OpenFile(temporaryDirectory+"/file1", os.O_WRONLY, fs.ModePerm)
+	file, err := os.OpenFile(tmpDir+"/file1", os.O_WRONLY, fs.ModePerm)
 	assert.NoError(t, err)
 	defer file.Close()
 
@@ -68,7 +70,7 @@ func TestGetNotStagedFiles(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Call the function
-	files, err := GetNotStagedFiles(&temporaryDirectory)
+	files, err := GetNotStagedFiles(&tmpDir)
 
 	// Assert the results
 	assert.NoError(t, err)
@@ -77,19 +79,19 @@ func TestGetNotStagedFiles(t *testing.T) {
 
 func TestGetNotStagedFilesWithNoNotStagedFiles(t *testing.T) {
 	// Create a temporary directory
-	temporaryDirectory, err := setupTmpGit()
+	tmpDir, err := helpers.SetupTmpGit()
 	assert.NoError(t, err)
 
 	// Create a file
-	_, err = execCommandAtPath(&temporaryDirectory, "touch", "file1")
+	_, err = execCommandAtPath(&tmpDir, "touch", "file1")
 	assert.NoError(t, err)
 
 	// Stage the file
-	_, err = execCommandAtPath(&temporaryDirectory, "git", "add", ".")
+	_, err = execCommandAtPath(&tmpDir, "git", "add", ".")
 	assert.NoError(t, err)
 
 	// Call the function
-	files, err := GetNotStagedFiles(&temporaryDirectory)
+	files, err := GetNotStagedFiles(&tmpDir)
 
 	// Assert the results
 	assert.NoError(t, err)

@@ -1,11 +1,13 @@
 package gitclient
 
 import (
+	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
-func setupTmpGit() (string, error) {
+func SetupTmpGit() (string, error) {
 	// Create a temporary directory
 	directory, err := exec.Command("mktemp", "-d").Output()
 	if err != nil {
@@ -25,4 +27,22 @@ func setupTmpGit() (string, error) {
 	}
 
 	return path, nil
+}
+
+func WriteFile(directory, filename, content string) error {
+	// Create directory if it does not exist
+	err := os.MkdirAll(directory, os.ModePerm)
+	if err != nil {
+		return err
+	}
+
+	path := filepath.Join(directory, filename)
+	file, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	_, err = file.WriteString(content)
+	return err
 }

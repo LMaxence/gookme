@@ -5,6 +5,8 @@ import (
 	"strings"
 	"testing"
 
+	helpers "github.com/LMaxence/gookme/packages/test-helpers"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,7 +19,7 @@ func TestGetGookmeRepoPath(t *testing.T) {
 }
 
 func TestGetRepoPathWithStart(t *testing.T) {
-	temporaryDirectory, err := setupTmpGit()
+	temporaryDirectory, err := helpers.SetupTmpGit()
 	assert.NoError(t, err)
 
 	path, err := GetRepoPath(&temporaryDirectory)

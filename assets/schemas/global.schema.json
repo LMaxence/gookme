@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$ref": "#/definitions/GookmeGlobalConfiguration",
+  "definitions": {
+    "GookmeGlobalConfiguration": {
+      "properties": {
+        "onModifiedFiles": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    }
+  }
+}
