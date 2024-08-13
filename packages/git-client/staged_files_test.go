@@ -3,6 +3,7 @@ package gitclient
 import (
 	"io/fs"
 	"os"
+	"path/filepath"
 	"testing"
 
 	helpers "github.com/LMaxence/gookme/packages/test-helpers"
@@ -28,7 +29,8 @@ func TestGetStagedFiles(t *testing.T) {
 
 	// Assert the results
 	assert.NoError(t, err)
-	assert.Contains(t, files, "file1")
+
+	assert.Contains(t, files, filepath.Join(tmpDir, "file1"))
 }
 
 func TestGetStagedFilesWithNoStagedFiles(t *testing.T) {
@@ -45,7 +47,7 @@ func TestGetStagedFilesWithNoStagedFiles(t *testing.T) {
 
 	// Assert the results
 	assert.NoError(t, err)
-	assert.NotContains(t, files, "file1")
+	assert.NotContains(t, files, filepath.Join(tmpDir, "file1"))
 }
 
 func TestGetNotStagedFiles(t *testing.T) {
@@ -74,7 +76,7 @@ func TestGetNotStagedFiles(t *testing.T) {
 
 	// Assert the results
 	assert.NoError(t, err)
-	assert.Contains(t, files, "file1")
+	assert.Contains(t, files, filepath.Join(tmpDir, "file1"))
 }
 
 func TestGetNotStagedFilesWithNoNotStagedFiles(t *testing.T) {
@@ -95,5 +97,5 @@ func TestGetNotStagedFilesWithNoNotStagedFiles(t *testing.T) {
 
 	// Assert the results
 	assert.NoError(t, err)
-	assert.NotContains(t, files, "file1")
+	assert.NotContains(t, files, filepath.Join(tmpDir, "file1"))
 }
