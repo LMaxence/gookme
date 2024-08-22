@@ -29,15 +29,17 @@ type HookExecutor struct {
 	tempDirPath         string
 	files               map[string]*os.File
 	exitOnError         bool
+	env                 map[string]string
 	gitCommandArguments []string
 }
 
-func NewHookExecutor(hook *configuration.Hook, gitCommandArguments []string) *HookExecutor {
+func NewHookExecutor(hook *configuration.Hook, gitCommandArguments []string, env map[string]string) *HookExecutor {
 	h := &HookExecutor{
 		hook:                hook,
 		files:               make(map[string]*os.File),
 		tempDirPath:         os.TempDir(),
 		exitOnError:         false,
+		env:                 env,
 		gitCommandArguments: gitCommandArguments,
 	}
 
@@ -150,6 +152,11 @@ func (h *HookExecutor) RunStep(step *configuration.Step) {
 	cmd := strings.ReplaceAll(step.Command, "$1", strings.Join(h.gitCommandArguments, " "))
 	command := exec.Command("sh", "-c", cmd)
 	command.Dir = h.hook.Path
+
+	for k, v := range h.env {
+		logger.Tracef("Setting env variable %s to %s", k, v)
+		command.Env = append(command.Environ(), k+"="+v)
+	}
 
 	l := logger.WithFields(map[string]string{
 		"Step ID": step.ID,

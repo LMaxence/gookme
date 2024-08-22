@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"os"
+	"path"
 	"sync"
 
 	"github.com/LMaxence/gookme/packages/configuration"
@@ -60,7 +62,7 @@ func run(args RunCommandArguments) error {
 	}
 
 	changedPaths, err := gitclient.GetStagedFiles(&dir, delimiter)
-	logger.Debugf("Staged files: %v", changedPaths)
+	logger.Tracef("Staged files: %v", changedPaths)
 	if err != nil {
 		logger.Errorf("Error while getting staged files: %s", err)
 		return err
@@ -77,8 +79,11 @@ func run(args RunCommandArguments) error {
 	logger.Infof("Running %d hooks, %d steps", len(conf.Hooks), nSteps)
 	executors := make([]*executor.HookExecutor, 0, len(conf.Hooks))
 
+	customEnv := map[string]string{
+		"PATH": path.Join(dir, "hooks", "partials") + ":" + os.Getenv("PATH"),
+	}
 	for _, hook := range conf.Hooks {
-		exec := executor.NewHookExecutor(&hook, args.GitCommandArgs)
+		exec := executor.NewHookExecutor(&hook, args.GitCommandArgs, customEnv)
 		exec = exec.WithExitOnStepError()
 		executors = append(executors, exec)
 	}

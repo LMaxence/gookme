@@ -33,3 +33,14 @@ assets/schemas/hooks.schema.json: packages/configuration
 
 schemas: assets/schemas/global.schema.json assets/schemas/hooks.schema.json
 
+.git/hooks/pre-commit: scripts/pre-commit.sh
+	@echo "Installing pre-commit hook"
+	cp scripts/pre-commit.sh .git/hooks/pre-commit
+	chmod +x .git/hooks/pre-commit
+
+.git/hooks/commit-msg: scripts/commit-msg.sh
+	@echo "Installing commit-msg hook"
+	cp scripts/commit-msg.sh .git/hooks/commit-msg
+	chmod +x .git/hooks/commit-msg
+
+hooks: .git/hooks/pre-commit .git/hooks/commit-msg

@@ -107,6 +107,36 @@ func createHookScriptFileOrAddScript(
 	return nil
 }
 
+func assertPartials() error {
+	repositoryPath, err := gitclient.GetRepoPath(nil)
+	if err != nil {
+		return err
+	}
+
+	hooksDirPath := path.Join(repositoryPath, "hooks")
+	partialsDirPath := path.Join(hooksDirPath, "partials")
+	partialGitKeepPath := path.Join(partialsDirPath, ".gitkeep")
+
+	logger.Debugf("Checking if partials directory exists at path %s", partialsDirPath)
+
+	err = hooksscripts.AssertFolder(hooksDirPath)
+	if err != nil {
+		return err
+	}
+
+	err = hooksscripts.AssertFolder(partialsDirPath)
+	if err != nil {
+		return err
+	}
+
+	err = hooksscripts.AssertFile(partialGitKeepPath)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func initFn(args InitCommandArguments) error {
 	if len(args.HookTypes) == 0 {
 		logger.Infof("No hook types provided, nothing to do")
@@ -127,6 +157,11 @@ func initFn(args InitCommandArguments) error {
 			return err
 		}
 		logger.Infof("Successfully initialized %s hook", hookType)
+	}
+
+	err := assertPartials()
+	if err != nil {
+		return err
 	}
 
 	return nil
