@@ -14,7 +14,8 @@ const (
 )
 
 type RunCommandArguments struct {
-	HookType configuration.HookType
+	HookType       configuration.HookType
+	GitCommandArgs []string
 }
 
 func parseRunCommandArguments(cContext *cli.Context) (*RunCommandArguments, error) {
@@ -23,7 +24,8 @@ func parseRunCommandArguments(cContext *cli.Context) (*RunCommandArguments, erro
 		return nil, err
 	}
 	args := &RunCommandArguments{
-		HookType: hookType,
+		HookType:       hookType,
+		GitCommandArgs: cContext.Args().Slice(),
 	}
 	return args, nil
 }
@@ -51,7 +53,7 @@ func run(args RunCommandArguments) error {
 	executors := make([]*executor.HookExecutor, 0, len(conf.Hooks))
 
 	for _, hook := range conf.Hooks {
-		exec := executor.NewHookExecutor(&hook)
+		exec := executor.NewHookExecutor(&hook, args.GitCommandArgs)
 		exec = exec.WithExitOnStepError()
 		executors = append(executors, exec)
 	}
@@ -83,6 +85,7 @@ var RunCommand *cli.Command = &cli.Command{
 	},
 	Action: func(cContext *cli.Context) error {
 		args, err := parseRunCommandArguments(cContext)
+
 		if err != nil {
 			return err
 		}

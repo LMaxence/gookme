@@ -72,6 +72,7 @@ func LoadHooksConfiguration(directory string, hookType HookType) ([]Hook, error)
 
 	for _, match := range matches {
 		path := filepath.Join(directory, match)
+
 		logger.Infof("Loading hook configuration from %s", path)
 		content, err := os.ReadFile(path)
 		if err != nil {
@@ -90,6 +91,8 @@ func LoadHooksConfiguration(directory string, hookType HookType) ([]Hook, error)
 		packageRelativePath = strings.TrimPrefix(packageRelativePath, "/")
 		packageRelativePath = strings.TrimSuffix(packageRelativePath, "/hooks")
 
+		logger.Debugf("Package relative path: %s", packageRelativePath)
+
 		steps := make([]Step, 0, len(hook.Steps))
 		for _, step := range hook.Steps {
 			steps = append(steps, Step{
@@ -105,7 +108,7 @@ func LoadHooksConfiguration(directory string, hookType HookType) ([]Hook, error)
 		}
 
 		hooks = append(hooks, Hook{
-			Path:  filepath.Dir(path),
+			Path:  filepath.Dir(filepath.Dir(path)),
 			Steps: steps,
 		})
 	}

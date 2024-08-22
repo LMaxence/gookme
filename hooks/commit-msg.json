@@ -1,0 +1,9 @@
+{
+  "$schema": "../assets/schemas/hooks.schema.json",
+  "steps": [
+    {
+      "name": "lint commit message",
+      "command": "commitlint lint --message $1"
+    }
+  ]
+}

@@ -35,6 +35,18 @@ var ALL_HOOKS = []HookType{
 	PrePush,
 }
 
+var ALL_HOOKS_STRING = []string{
+	string(PreCommit),
+	string(PrepareCommit),
+	string(CommitMsg),
+	string(PostCommit),
+	string(PostMerge),
+	string(PostRewrite),
+	string(PreRebase),
+	string(PostCheckout),
+	string(PrePush),
+}
+
 type Hook struct {
 	Path  string
 	Steps []Step

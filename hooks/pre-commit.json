@@ -1,0 +1,13 @@
+{
+  "$schema": "../assets/schemas/hooks.schema.json",
+  "steps": [
+    {
+      "name": "format",
+      "command": "./scripts/check-format.sh"
+    },
+    {
+      "name": "lint",
+      "command": "golangci-lint run $(go list -f '{{.Dir}}/...' -m)"
+    }
+  ]
+}
