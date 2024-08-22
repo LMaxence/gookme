@@ -23,6 +23,18 @@ const (
 	PrePush       HookType = "pre-push"
 )
 
+var ALL_HOOKS = []HookType{
+	PreCommit,
+	PrepareCommit,
+	CommitMsg,
+	PostCommit,
+	PostMerge,
+	PostRewrite,
+	PreRebase,
+	PostCheckout,
+	PrePush,
+}
+
 type Hook struct {
 	Path  string
 	Steps []Step

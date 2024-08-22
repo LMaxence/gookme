@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// GetRepoPath returns the absolute path of the .git repository
+// GetRepoPath returns the absolute path of the folder containing the git repository
 // for the current working directory.
 func GetRepoPath(start *string) (string, error) {
 	// If the start path is not provided, use the current working directory

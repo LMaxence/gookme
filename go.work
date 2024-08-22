@@ -10,6 +10,8 @@ use (
 	./packages/executor
 	./packages/git-client
 	./packages/logging
+	./packages/meta
+	./packages/hooks-scripts
 	./packages/scheduler
 	./packages/test-helpers
 )
