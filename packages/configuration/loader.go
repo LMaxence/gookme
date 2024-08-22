@@ -21,7 +21,7 @@ type GookmeConfiguration struct {
 }
 
 func LoadGlobalConfiguration(directory string) (*GookmeGlobalConfiguration, error) {
-	logger.Infof("Loading global configuration from %s", directory)
+	logger.Debugf("Loading global configuration from %s", directory)
 
 	matches, err := filepath.Glob(filepath.Join(directory, ".gookme.json"))
 	if err != nil {
@@ -29,7 +29,7 @@ func LoadGlobalConfiguration(directory string) (*GookmeGlobalConfiguration, erro
 	}
 
 	if len(matches) == 0 {
-		logger.Info("No global configuration found, using default values")
+		logger.Debug("No global configuration found, using default values")
 		return DefaultGlobalConfiguration(), nil
 	}
 
@@ -55,7 +55,7 @@ func LoadGlobalConfiguration(directory string) (*GookmeGlobalConfiguration, erro
 
 func LoadHooksConfiguration(directory string, hookType HookType) ([]Hook, error) {
 	pattern := fmt.Sprintf("**/hooks/%s.json", string(hookType))
-	logger.Infof("Loading hooks configuration from %s with pattern %s", directory, pattern)
+	logger.Debugf("Loading hooks configuration from %s with pattern %s", directory, pattern)
 
 	fsys := os.DirFS(directory)
 	matches, err := doublestar.Glob(fsys, pattern)
@@ -73,7 +73,7 @@ func LoadHooksConfiguration(directory string, hookType HookType) ([]Hook, error)
 	for _, match := range matches {
 		path := filepath.Join(directory, match)
 
-		logger.Infof("Loading hook configuration from %s", path)
+		logger.Debugf("Loading hook configuration from %s", path)
 		content, err := os.ReadFile(path)
 		if err != nil {
 			logger.Warnf("Error while reading hook configuration file %s: %s", path, err)

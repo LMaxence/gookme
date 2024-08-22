@@ -4,8 +4,11 @@ import (
 	"strings"
 
 	"github.com/LMaxence/gookme/packages/configuration"
+	"github.com/LMaxence/gookme/packages/logging"
 	"github.com/bmatcuk/doublestar/v4"
 )
+
+var logger = logging.NewLogger("scheduler")
 
 func filterChangesetWithPrefix(
 	changedPaths []string,
@@ -55,10 +58,13 @@ func FilterHooksWithChangeset(
 	// For each hook, check if the hook directory is contained by one of the changeset's elements.
 	// If it is the case, add the hook to the list of hooks to execute
 	// If the hook is not in the changeset, skip it
+
 	for _, hook := range hooks {
 		matchedPaths := filterChangesetWithPrefix(changedPaths, hook.Path)
 		if len(matchedPaths) > 0 {
 			filtered = append(filtered, hook)
+		} else {
+			logger.Debugf("Hook %s did not match any file, dropping", hook.Path)
 		}
 	}
 
@@ -94,6 +100,8 @@ func FilterStepsWithOnlyOn(
 
 			if len(changedPathsWithPattern) > 0 {
 				steps = append(steps, step)
+			} else {
+				logger.Debugf("Step %s:%s did not match any file using pattern %s, dropping", step.PackageRelativePath, step.Name, *onlyOn)
 			}
 		}
 

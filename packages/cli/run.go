@@ -43,7 +43,7 @@ func run(args RunCommandArguments) error {
 		return err
 	}
 
-	logger.Info("Loading configurations")
+	logger.Debugf("Loading configurations")
 	conf, err := configuration.LoadConfiguration(dir, args.HookType)
 	if err != nil {
 		logger.Errorf("Error while loading configuration: %s", err)
@@ -67,6 +67,7 @@ func run(args RunCommandArguments) error {
 	}
 
 	conf.Hooks = scheduler.FilterHooksWithChangeset(changedPaths, conf.Hooks)
+	conf.Hooks = scheduler.FilterStepsWithOnlyOn(changedPaths, conf.Hooks)
 
 	nSteps := 0
 	for _, hook := range conf.Hooks {
