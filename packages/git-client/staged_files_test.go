@@ -25,7 +25,7 @@ func TestGetStagedFiles(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Call the function
-	files, err := GetStagedFiles(&tmpDir)
+	files, err := GetStagedFiles(&tmpDir, nil)
 
 	// Assert the results
 	assert.NoError(t, err)
@@ -43,7 +43,7 @@ func TestGetStagedFilesWithNoStagedFiles(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Call the function
-	files, err := GetStagedFiles(&tmpDir)
+	files, err := GetStagedFiles(&tmpDir, nil)
 
 	// Assert the results
 	assert.NoError(t, err)
@@ -72,7 +72,7 @@ func TestGetNotStagedFiles(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Call the function
-	files, err := GetNotStagedFiles(&tmpDir)
+	files, err := GetNotStagedFiles(&tmpDir, nil)
 
 	// Assert the results
 	assert.NoError(t, err)
@@ -93,7 +93,7 @@ func TestGetNotStagedFilesWithNoNotStagedFiles(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Call the function
-	files, err := GetNotStagedFiles(&tmpDir)
+	files, err := GetNotStagedFiles(&tmpDir, nil)
 
 	// Assert the results
 	assert.NoError(t, err)

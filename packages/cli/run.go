@@ -6,6 +6,7 @@ import (
 	"github.com/LMaxence/gookme/packages/configuration"
 	"github.com/LMaxence/gookme/packages/executor"
 	gitclient "github.com/LMaxence/gookme/packages/git-client"
+	"github.com/LMaxence/gookme/packages/scheduler"
 	"github.com/urfave/cli/v2"
 )
 
@@ -16,6 +17,8 @@ const (
 type RunCommandArguments struct {
 	HookType       configuration.HookType
 	GitCommandArgs []string
+	From           string
+	To             string
 }
 
 func parseRunCommandArguments(cContext *cli.Context) (*RunCommandArguments, error) {
@@ -23,9 +26,12 @@ func parseRunCommandArguments(cContext *cli.Context) (*RunCommandArguments, erro
 	if err != nil {
 		return nil, err
 	}
+
 	args := &RunCommandArguments{
 		HookType:       hookType,
 		GitCommandArgs: cContext.Args().Slice(),
+		From:           cContext.String("from"),
+		To:             cContext.String("to"),
 	}
 	return args, nil
 }
@@ -43,6 +49,24 @@ func run(args RunCommandArguments) error {
 		logger.Errorf("Error while loading configuration: %s", err)
 		return err
 	}
+
+	var delimiter *gitclient.GitRefDelimiter
+	if args.From != "" && args.To != "" {
+		logger.Debugf("Setting Git ref delimiter from %s to %s", args.From, args.To)
+		delimiter = &gitclient.GitRefDelimiter{
+			From: args.From,
+			To:   args.To,
+		}
+	}
+
+	changedPaths, err := gitclient.GetStagedFiles(&dir, delimiter)
+	logger.Debugf("Staged files: %v", changedPaths)
+	if err != nil {
+		logger.Errorf("Error while getting staged files: %s", err)
+		return err
+	}
+
+	conf.Hooks = scheduler.FilterHooksWithChangeset(changedPaths, conf.Hooks)
 
 	nSteps := 0
 	for _, hook := range conf.Hooks {
@@ -81,6 +105,16 @@ var RunCommand *cli.Command = &cli.Command{
 			Aliases: []string{"t"},
 			Value:   "pre-commit",
 			Usage:   "The type of Git hook to run. Default is pre-commit, but accepted values are: pre-commit, prepare-commit-msg, commit-msg,  post-commit, post-merge, post-rewrite, pre-rebase, post-checkout, pre-push",
+		},
+		&cli.StringFlag{
+			Name:    "from",
+			Aliases: []string{"f"},
+			Usage:   "An optional commit SHA-1 hash to compare to generate the staged changes from.",
+		},
+		&cli.StringFlag{
+			Name:    "to",
+			Aliases: []string{"o"},
+			Usage:   "An optional commit SHA-1 hash to compare to generate the staged changes to.",
 		},
 	},
 	Action: func(cContext *cli.Context) error {

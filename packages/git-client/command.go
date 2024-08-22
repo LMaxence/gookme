@@ -10,10 +10,12 @@ func execCommandAtPath(path *string, command string, args ...string) (string, er
 		cmd.Dir = *path
 	}
 
-	out, err := cmd.Output()
+	logger.Debugf("Executing command %s in %s", cmd.String(), cmd.Dir)
+
+	out, err := cmd.CombinedOutput()
 
 	if err != nil {
-		return "", err
+		return string(out), err
 	}
 
 	if len(out) == 0 {
