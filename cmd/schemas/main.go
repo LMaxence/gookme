@@ -33,6 +33,18 @@ func generateHookSchema() (string, error) {
 	return string(schemaJSON), nil
 }
 
+func generateStepSchema() (string, error) {
+	schema := jsonschema.Reflect(&configuration.StepConfiguration{})
+
+	// Print the JSON schema
+	schemaJSON, err := json.MarshalIndent(schema, "", "  ")
+	if err != nil {
+		return "", err
+	}
+
+	return string(schemaJSON), nil
+}
+
 // Write the JSON schema files representing `GookmeGlobalConfiguration` and `HookConfiguration`
 func main() {
 	// Retrieve argv[1] to get the type of schema to generate
@@ -48,6 +60,8 @@ func main() {
 		schema, err = generateGlobalSchema()
 	case "hooks":
 		schema, err = generateHookSchema()
+	case "steps":
+		schema, err = generateStepSchema()
 	default:
 		panic("Unknown schema type: " + os.Args[1])
 	}

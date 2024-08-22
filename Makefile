@@ -31,7 +31,11 @@ assets/schemas/hooks.schema.json: packages/configuration
 	@echo "Generating hooks schema"
 	go run ./cmd/schemas/main.go hooks > assets/schemas/hooks.schema.json
 
-schemas: assets/schemas/global.schema.json assets/schemas/hooks.schema.json
+assets/schemas/steps.schema.json: packages/configuration
+	@echo "Generating steps schema"
+	go run ./cmd/schemas/main.go steps > assets/schemas/steps.schema.json
+
+schemas: assets/schemas/global.schema.json assets/schemas/hooks.schema.json assets/schemas/steps.schema.json
 
 .git/hooks/pre-commit: scripts/pre-commit.sh
 	@echo "Installing pre-commit hook"

@@ -107,7 +107,7 @@ func createHookScriptFileOrAddScript(
 	return nil
 }
 
-func assertPartials() error {
+func assertHooksDir() error {
 	repositoryPath, err := gitclient.GetRepoPath(nil)
 	if err != nil {
 		return err
@@ -116,8 +116,10 @@ func assertPartials() error {
 	hooksDirPath := path.Join(repositoryPath, "hooks")
 	partialsDirPath := path.Join(hooksDirPath, "partials")
 	partialGitKeepPath := path.Join(partialsDirPath, ".gitkeep")
+	sharedDirPath := path.Join(hooksDirPath, "shared")
+	sharedGitKeepPath := path.Join(sharedDirPath, ".gitkeep")
 
-	logger.Debugf("Checking if partials directory exists at path %s", partialsDirPath)
+	logger.Debugf("Checking if hooks directory exists at path %s", partialsDirPath)
 
 	err = hooksscripts.AssertFolder(hooksDirPath)
 	if err != nil {
@@ -130,6 +132,16 @@ func assertPartials() error {
 	}
 
 	err = hooksscripts.AssertFile(partialGitKeepPath)
+	if err != nil {
+		return err
+	}
+
+	err = hooksscripts.AssertFolder(sharedDirPath)
+	if err != nil {
+		return err
+	}
+
+	err = hooksscripts.AssertFile(sharedGitKeepPath)
 	if err != nil {
 		return err
 	}
@@ -159,7 +171,7 @@ func initFn(args InitCommandArguments) error {
 		logger.Infof("Successfully initialized %s hook", hookType)
 	}
 
-	err := assertPartials()
+	err := assertHooksDir()
 	if err != nil {
 		return err
 	}
