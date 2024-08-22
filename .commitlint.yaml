@@ -1,0 +1,3 @@
+settings:
+  header-max-length:
+    argument: 100
