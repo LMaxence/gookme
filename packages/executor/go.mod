@@ -1,11 +1,8 @@
-module github.com/LMaxence/gookme/packages/scheduler
+module github.com/LMaxence/gookme/packages/executor
 
 go 1.22.4
 
-require (
-	github.com/bmatcuk/doublestar/v4 v4.6.1
-	github.com/stretchr/testify v1.9.0
-)
+require github.com/stretchr/testify v1.9.0
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect

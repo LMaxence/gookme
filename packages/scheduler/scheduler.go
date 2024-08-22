@@ -1,8 +1,6 @@
 package scheduler
 
 import (
-	"fmt"
-	"path/filepath"
 	"strings"
 
 	"github.com/LMaxence/gookme/packages/configuration"
@@ -37,7 +35,6 @@ func filterChangesetWithPattern(
 
 		match, err := doublestar.Match(pattern, path)
 		if err != nil {
-			fmt.Println(err)
 			return nil, err
 		}
 
@@ -49,7 +46,7 @@ func filterChangesetWithPattern(
 	return filtered, nil
 }
 
-func filterHooksWithChangeset(
+func FilterHooksWithChangeset(
 	changedPaths []string,
 	hooks []configuration.Hook,
 ) []configuration.Hook {
@@ -59,8 +56,7 @@ func filterHooksWithChangeset(
 	// If it is the case, add the hook to the list of hooks to execute
 	// If the hook is not in the changeset, skip it
 	for _, hook := range hooks {
-		hookDir := filepath.Dir(hook.Path)
-		matchedPaths := filterChangesetWithPrefix(changedPaths, hookDir)
+		matchedPaths := filterChangesetWithPrefix(changedPaths, hook.Path)
 		if len(matchedPaths) > 0 {
 			filtered = append(filtered, hook)
 		}
@@ -70,7 +66,7 @@ func filterHooksWithChangeset(
 	return filtered
 }
 
-func filterStepsWithOnlyOn(
+func FilterStepsWithOnlyOn(
 	changedPaths []string,
 	hooks []configuration.Hook,
 ) []configuration.Hook {
@@ -80,11 +76,10 @@ func filterStepsWithOnlyOn(
 	// If it is the case, add the hook to the list of hooks to execute
 
 	for _, hook := range hooks {
-		steps := make([]configuration.StepConfiguration, 0)
-		hookDir := filepath.Dir(hook.Path)
-		changedPaths := filterChangesetWithPrefix(changedPaths, hookDir)
+		steps := make([]configuration.Step, 0)
+		changedPaths := filterChangesetWithPrefix(changedPaths, hook.Path)
 
-		for _, step := range hook.Configuration.Steps {
+		for _, step := range hook.Steps {
 			onlyOn := step.OnlyOn
 
 			if onlyOn == nil {
@@ -104,10 +99,8 @@ func filterStepsWithOnlyOn(
 
 		if len(steps) > 0 {
 			filtered = append(filtered, configuration.Hook{
-				Path: hook.Path,
-				Configuration: configuration.HookConfiguration{
-					Steps: steps,
-				},
+				Path:  hook.Path,
+				Steps: steps,
 			})
 		}
 	}

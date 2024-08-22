@@ -6,7 +6,9 @@ use (
 	./cmd/cli
 	./cmd/schemas
 	./packages/configuration
+	./packages/executor
 	./packages/git-client
+	./packages/logging
 	./packages/scheduler
 	./packages/test-helpers
 )

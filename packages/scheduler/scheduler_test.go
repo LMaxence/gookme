@@ -1,17 +1,17 @@
 package scheduler
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/LMaxence/gookme/packages/configuration"
 	"github.com/stretchr/testify/assert"
 )
 
-var defaultHookConfiguration = configuration.HookConfiguration{
-	Steps: []configuration.StepConfiguration{
-		{
-			Command: "echo 'Hello World'",
-		},
+var defaultSteps = []configuration.Step{
+	{
+		Command: "echo 'Hello World'",
+		ID:      "step1",
 	},
 }
 
@@ -19,16 +19,16 @@ func TestFilterScheduledHooksWithChangeset(t *testing.T) {
 	changedPaths := []string{"/packages/path1/somefile.go"}
 	hooks := []configuration.Hook{
 		{
-			Path:          "/packages/path1/pre-commit.json",
-			Configuration: defaultHookConfiguration,
+			Path:  "/packages/path1",
+			Steps: defaultSteps,
 		},
 		{
-			Path:          "/packages/path2/pre-commit.json",
-			Configuration: defaultHookConfiguration,
+			Path:  "/packages/path2",
+			Steps: defaultSteps,
 		},
 	}
 
-	filteredHooks := filterHooksWithChangeset(changedPaths, hooks)
+	filteredHooks := FilterHooksWithChangeset(changedPaths, hooks)
 	assert.Equal(t, 1, len(filteredHooks))
 	assert.Equal(t, hooks[0], filteredHooks[0])
 }
@@ -37,16 +37,16 @@ func TestFilterScheduledHooksWithLargerChangeset(t *testing.T) {
 	changedPaths := []string{"/packages/path1/somefile.go", "/packages/path2/somefile.go"}
 	hooks := []configuration.Hook{
 		{
-			Path:          "/packages/path1/pre-commit.json",
-			Configuration: defaultHookConfiguration,
+			Path:  "/packages/path1",
+			Steps: defaultSteps,
 		},
 		{
-			Path:          "/packages/path2/pre-commit.json",
-			Configuration: defaultHookConfiguration,
+			Path:  "/packages/path2",
+			Steps: defaultSteps,
 		},
 	}
 
-	filteredHooks := filterHooksWithChangeset(changedPaths, hooks)
+	filteredHooks := FilterHooksWithChangeset(changedPaths, hooks)
 	assert.Equal(t, 2, len(filteredHooks))
 	assert.Equal(t, hooks[0], filteredHooks[0])
 	assert.Equal(t, hooks[1], filteredHooks[1])
@@ -56,12 +56,12 @@ func TestFilterScheduledHooksWithChangesetWithNoMatchingHooks(t *testing.T) {
 	changedPaths := []string{"/packages/path1/somefile.go"}
 	hooks := []configuration.Hook{
 		{
-			Path:          "/packages/path2/pre-commit.json",
-			Configuration: defaultHookConfiguration,
+			Path:  "/packages/path2",
+			Steps: defaultSteps,
 		},
 	}
 
-	filteredHooks := filterHooksWithChangeset(changedPaths, hooks)
+	filteredHooks := FilterHooksWithChangeset(changedPaths, hooks)
 	assert.Equal(t, 0, len(filteredHooks))
 }
 
@@ -134,16 +134,15 @@ func fixtureHookConfiguration(
 	onlyOn []*string,
 ) configuration.Hook {
 	hook := configuration.Hook{
-		Path: path,
-		Configuration: configuration.HookConfiguration{
-			Steps: []configuration.StepConfiguration{},
-		},
+		Path:  path,
+		Steps: []configuration.Step{},
 	}
 
-	for _, pattern := range onlyOn {
-		hook.Configuration.Steps = append(hook.Configuration.Steps, configuration.StepConfiguration{
+	for i, pattern := range onlyOn {
+		hook.Steps = append(hook.Steps, configuration.Step{
 			OnlyOn:  pattern,
 			Command: "echo Hello world",
+			ID:      fmt.Sprintf("step%d", i),
 		})
 	}
 
@@ -160,41 +159,41 @@ var filterStepsWithOnlyOnTestCases = []struct {
 	{
 		changedPaths: []string{"/packages/path1/somefile.go"},
 		hooks: []configuration.Hook{
-			fixtureHookConfiguration("/packages/path1/pre-commit.json", []*string{nil}),
+			fixtureHookConfiguration("/packages/path1", []*string{nil}),
 		},
 		expected: []configuration.Hook{
-			fixtureHookConfiguration("/packages/path1/pre-commit.json", []*string{nil}),
+			fixtureHookConfiguration("/packages/path1", []*string{nil}),
 		},
 	},
 	{
 		changedPaths: []string{"/packages/path1/somefile.go"},
 		hooks: []configuration.Hook{
-			fixtureHookConfiguration("/packages/path1/pre-commit.json", []*string{&goStarPattern}),
+			fixtureHookConfiguration("/packages/path1", []*string{&goStarPattern}),
 		},
 		expected: []configuration.Hook{
-			fixtureHookConfiguration("/packages/path1/pre-commit.json", []*string{&goStarPattern}),
+			fixtureHookConfiguration("/packages/path1", []*string{&goStarPattern}),
 		},
 	},
 	{
 		changedPaths: []string{"/packages/path1/somefile.json"},
 		hooks: []configuration.Hook{
-			fixtureHookConfiguration("/packages/path1/pre-commit.json", []*string{&goStarPattern}),
+			fixtureHookConfiguration("/packages/path1", []*string{&goStarPattern}),
 		},
 		expected: []configuration.Hook{},
 	},
 	{
 		changedPaths: []string{"/packages/path1/somefile.json"},
 		hooks: []configuration.Hook{
-			fixtureHookConfiguration("/packages/path1/pre-commit.json", []*string{&somefileStarPattern}),
+			fixtureHookConfiguration("/packages/path1", []*string{&somefileStarPattern}),
 		},
 		expected: []configuration.Hook{
-			fixtureHookConfiguration("/packages/path1/pre-commit.json", []*string{&somefileStarPattern}),
+			fixtureHookConfiguration("/packages/path1", []*string{&somefileStarPattern}),
 		},
 	},
 	{
 		changedPaths: []string{"/packages/path1/some-other-file.json"},
 		hooks: []configuration.Hook{
-			fixtureHookConfiguration("/packages/path1/pre-commit.json", []*string{&somefileStarPattern}),
+			fixtureHookConfiguration("/packages/path1", []*string{&somefileStarPattern}),
 		},
 		expected: []configuration.Hook{},
 	},
@@ -202,14 +201,14 @@ var filterStepsWithOnlyOnTestCases = []struct {
 
 func TestFilterStepsWithOnlyOn(t *testing.T) {
 	for _, testCase := range filterStepsWithOnlyOnTestCases {
-		filteredHooks := filterStepsWithOnlyOn(testCase.changedPaths, testCase.hooks)
+		filteredHooks := FilterStepsWithOnlyOn(testCase.changedPaths, testCase.hooks)
 
 		assert.Equal(t, len(testCase.expected), len(filteredHooks))
 		for i, expectedHook := range testCase.expected {
 			filteredHook := filteredHooks[i]
 
 			assert.Equal(t, expectedHook.Path, filteredHook.Path)
-			assert.Equal(t, len(expectedHook.Configuration.Steps), len(filteredHook.Configuration.Steps))
+			assert.Equal(t, len(expectedHook.Steps), len(filteredHook.Steps))
 		}
 	}
 }

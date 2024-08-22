@@ -1,0 +1,17 @@
+{
+  "steps": [
+    {
+      "name": "lint",
+      "command": "echo 'hello world'"
+    },
+    {
+      "name": "error",
+      "command": "false"
+    },
+    {
+      "name": "sleep",
+      "command": "sleep 2",
+      "serial": true
+    }
+  ]
+}

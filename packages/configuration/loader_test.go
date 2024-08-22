@@ -48,9 +48,9 @@ func TestLoadHooksConfiguration(t *testing.T) {
 
 	assert.Len(t, hooks, 1)
 	assert.Equal(t, hooks[0].Path, directory)
-	assert.Len(t, hooks[0].Configuration.Steps, 1)
-	assert.Equal(t, hooks[0].Configuration.Steps[0].Name, "step1")
-	assert.Equal(t, hooks[0].Configuration.Steps[0].Command, "echo 'Hello World'")
+	assert.Len(t, hooks[0].Steps, 1)
+	assert.Equal(t, hooks[0].Steps[0].Name, "step1")
+	assert.Equal(t, hooks[0].Steps[0].Command, "echo 'Hello World'")
 }
 
 func TestLoadNestedHooksConfiguration(t *testing.T) {
@@ -67,9 +67,9 @@ func TestLoadNestedHooksConfiguration(t *testing.T) {
 
 	assert.Len(t, hooks, 1)
 	assert.Equal(t, hooks[0].Path, filepath.Join(directory, "packages/a"))
-	assert.Len(t, hooks[0].Configuration.Steps, 1)
-	assert.Equal(t, hooks[0].Configuration.Steps[0].Name, "step1")
-	assert.Equal(t, hooks[0].Configuration.Steps[0].Command, "echo 'Hello World'")
+	assert.Len(t, hooks[0].Steps, 1)
+	assert.Equal(t, hooks[0].Steps[0].Name, "step1")
+	assert.Equal(t, hooks[0].Steps[0].Command, "echo 'Hello World'")
 }
 
 func TestLoadHooksConfigurationFromEmptyDirectory(t *testing.T) {
@@ -100,7 +100,7 @@ func TestLoadConfiguration(t *testing.T) {
 	assert.Equal(t, *config.Global.OnModifiedFiles, AddAndCommit)
 	assert.Len(t, config.Hooks, 1)
 	assert.Equal(t, config.Hooks[0].Path, directory)
-	assert.Len(t, config.Hooks[0].Configuration.Steps, 1)
-	assert.Equal(t, config.Hooks[0].Configuration.Steps[0].Name, "step1")
-	assert.Equal(t, config.Hooks[0].Configuration.Steps[0].Command, "echo 'Hello World'")
+	assert.Len(t, config.Hooks[0].Steps, 1)
+	assert.Equal(t, config.Hooks[0].Steps[0].Name, "step1")
+	assert.Equal(t, config.Hooks[0].Steps[0].Command, "echo 'Hello World'")
 }
