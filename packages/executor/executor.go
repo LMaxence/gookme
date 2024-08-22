@@ -42,6 +42,9 @@ func NewHookExecutor(hook *configuration.Hook) *HookExecutor {
 	for _, step := range hook.Steps {
 		h.onStepStatusChange(&step, StepExecutionStatusPending)
 		p := path.Join(h.tempDirPath, step.ID+".log")
+
+		logger.Debugf("Creating file for %s:%s at %s", step.PackageRelativePath, step.Name, p)
+
 		file, err := os.Create(p)
 		if err != nil {
 			logger.Warnf("Error while creating file for %s (%s): %s", step.Name, step.ID, err)
