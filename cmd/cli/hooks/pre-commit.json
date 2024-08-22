@@ -1,0 +1,8 @@
+{
+  "steps": [
+    {
+      "name": "success",
+      "command": "echo 'success'"
+    }
+  ]
+}
