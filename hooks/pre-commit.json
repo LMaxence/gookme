@@ -2,14 +2,18 @@
   "$schema": "../assets/schemas/hooks.schema.json",
   "steps": [
     {
-      "name": "format",
+      "name": "Check format",
       "command": "./scripts/check-format.sh",
       "onlyOn": "*.go"
     },
     {
-      "name": "lint",
+      "name": "Code quality",
       "command": "golangci-lint run $(go list -f '{{.Dir}}/...' -m)",
       "onlyOn": "*.go"
+    },
+    {
+      "name": "Assets generation",
+      "command": "make assets"
     }
   ]
 }

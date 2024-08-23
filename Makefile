@@ -37,6 +37,10 @@ assets/schemas/steps.schema.json: packages/configuration
 
 schemas: assets/schemas/global.schema.json assets/schemas/hooks.schema.json assets/schemas/steps.schema.json
 
+.github/depenbot.yml:
+	@echo "Generating .github/depenbot.yml"
+	./scripts/generate-dependabot-config.sh
+
 .git/hooks/pre-commit: scripts/pre-commit.sh
 	@echo "Installing pre-commit hook"
 	cp scripts/pre-commit.sh .git/hooks/pre-commit
@@ -48,6 +52,8 @@ schemas: assets/schemas/global.schema.json assets/schemas/hooks.schema.json asse
 	chmod +x .git/hooks/commit-msg
 
 hooks: .git/hooks/pre-commit .git/hooks/commit-msg
+
+assets: schemas .github/depenbot.yml hooks
 
 build/gookme-darwin-amd64:
 	@echo "Building gookme for darwin/amd64"
