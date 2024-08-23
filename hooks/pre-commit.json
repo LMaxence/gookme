@@ -3,11 +3,13 @@
   "steps": [
     {
       "name": "format",
-      "command": "./scripts/check-format.sh"
+      "command": "./scripts/check-format.sh",
+      "onlyOn": "*.go"
     },
     {
       "name": "lint",
-      "command": "golangci-lint run $(go list -f '{{.Dir}}/...' -m)"
+      "command": "golangci-lint run $(go list -f '{{.Dir}}/...' -m)",
+      "onlyOn": "*.go"
     }
   ]
 }
