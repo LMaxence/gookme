@@ -53,24 +53,30 @@ build/gookme-darwin-amd64:
 	@echo "Building gookme for darwin/amd64"
 	GOOS=darwin GOARCH=amd64 go build -o build/gookme-darwin-amd64 ./cmd/cli
 
-build/gookme-linux-amd64:
-	@echo "Building gookme for linux/amd64"
-	GOOS=linux GOARCH=amd64 go build -o build/gookme-linux-amd64 ./cmd/cli
-
-build/gookme-windows-amd64:
-	@echo "Building gookme for windows/amd64"
-	GOOS=windows GOARCH=amd64 go build -o build/gookme-windows-amd64.exe ./cmd/cli
-
 build/gookme-darwin-arm64:
 	@echo "Building gookme for darwin/arm64"
 	GOOS=darwin GOARCH=arm64 go build -o build/gookme-darwin-arm64 ./cmd/cli
+
+build-darwin: build/gookme-darwin-amd64 build/gookme-darwin-arm64
+
+build/gookme-linux-amd64:
+	@echo "Building gookme for linux/amd64"
+	GOOS=linux GOARCH=amd64 go build -o build/gookme-linux-amd64 ./cmd/cli
 
 build/gookme-linux-arm64:
 	@echo "Building gookme for linux/arm64"
 	GOOS=linux GOARCH=arm64 go build -o build/gookme-linux-arm64 ./cmd/cli
 
+build-linux: build/gookme-linux-amd64 build/gookme-linux-arm64
+
+build/gookme-windows-amd64:
+	@echo "Building gookme for windows/amd64"
+	GOOS=windows GOARCH=amd64 go build -o build/gookme-windows-amd64.exe ./cmd/cli
+
 build/gookme-windows-arm64:
 	@echo "Building gookme for windows/arm64"
 	GOOS=windows GOARCH=arm64 go build -o build/gookme-windows-arm64.exe ./cmd/cli
 
-build: build/gookme-darwin-amd64 build/gookme-linux-amd64 build/gookme-windows-amd64 build/gookme-darwin-arm64 build/gookme-linux-arm64 build/gookme-windows-arm64
+build-windows: build/gookme-windows-amd64 build/gookme-windows-arm64
+
+build: build-darwin build-linux build-windows

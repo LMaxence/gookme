@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'packages/meta/version.go'
 
 jobs:
   tag:
@@ -11,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.GH_PAT }}
 
