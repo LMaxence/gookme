@@ -17,7 +17,7 @@ updates:
 EOL
 
 # Find all directories containing go.work files and append to dependabot.yml
-find "$ROOT_DIR" -name "go.mod" -exec dirname {} \; | while read -r dir; do
+find "$ROOT_DIR" -name "go.mod" -exec dirname {} \; | sort | while read -r dir; do
   cat <<EOL >> "$OUTPUT_FILE"
   - package-ecosystem: "gomod"
     directory: "$dir"
