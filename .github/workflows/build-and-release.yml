@@ -1,0 +1,75 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.22.4'
+
+      - name: Install dependencies
+        run: go mod download
+
+      - name: Build project
+        run: make build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifacts
+          path: build/
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build-artifacts
+          path: build/
+
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          RELEASE_NAME="Release $TAG_NAME"
+          API_URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/releases"
+          RESPONSE=$(curl -s -X POST -H "Authorization: token $GITHUB_TOKEN" -d @- $API_URL <<EOF
+          {
+            "tag_name": "$TAG_NAME",
+            "name": "$RELEASE_NAME",
+            "draft": false,
+            "prerelease": false
+          })
+          UPLOAD_URL=$(echo $RESPONSE | jq -r .upload_url | sed -e "s/{?name,label}//")
+          echo "UPLOAD_URL=$UPLOAD_URL" >> $GITHUB_ENV
+
+      - name: Upload Release Assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          UPLOAD_URL: ${{ env.UPLOAD_URL }}
+        run: |
+          for FILE in build/*; do
+            FILENAME=$(basename $FILE)
+            curl -s -X POST -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Content-Type: application/octet-stream" \
+              --data-binary @$FILE \
+              "$UPLOAD_URL?name=$FILENAME"
+          done
