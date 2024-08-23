@@ -7,6 +7,15 @@ BINARY_NAME="gookme"
 
 # Determine the OS and architecture
 OS=$(uname | tr '[:upper:]' '[:lower:]')
+# OS is darwin on MacOS and default to linux for all other OSes
+if [ "$OS" == "darwin" ]; then
+    echo "Downloading Gookme for MacOS..."
+    OS="macos"
+else
+    echo "Downloading Gookme for Linux..."
+    OS="linux"
+fi
+
 ARCH=$(uname -m)
 
 # Map architecture names to the expected format
@@ -23,25 +32,18 @@ case $ARCH in
         ;;
 esac
 
-# Determine the file extension for Windows
-EXT=""
-if [ "$OS" = "mingw64_nt-10.0" ] || [ "$OS" = "msys_nt-10.0" ]; then
-    OS="windows"
-    EXT=".exe"
-fi
-
 # Construct the download URL for the latest release
-URL="https://github.com/$REPO_OWNER/$REPO_NAME/releases/latest/download/$BINARY_NAME-$OS-$ARCH$EXT"
+URL="https://github.com/$REPO_OWNER/$REPO_NAME/releases/latest/download/$BINARY_NAME-$OS-$ARCH"
 
 # Download the binary
 echo "Downloading $BINARY_NAME from $URL..."
-curl -L -o "$BINARY_NAME$EXT" "$URL"
+curl -L -o "$BINARY_NAME" "$URL"
 
 # Make the binary executable
-chmod +x "$BINARY_NAME$EXT"
+chmod +x "$BINARY_NAME"
 
 # Move the binary to a directory in the PATH
-mv "$BINARY_NAME$EXT" "/usr/local/bin/$BINARY_NAME$EXT"
+mv "$BINARY_NAME" "/usr/local/bin/$BINARY_NAME"
 
 gookme --version
 echo "Successfully installed Gookme."

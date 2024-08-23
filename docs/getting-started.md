@@ -4,34 +4,20 @@
 
 === "Linux"
 
-    ``` c
-    #include <stdio.h>
-
-    int main(void) {
-      printf("Hello world!\n");
-      return 0;
-    }
+    ``` bash title="Install Gookme"
+    curl -sSL https://raw.githubusercontent.com/LMaxence/gookme/main/scripts/install.sh | bash
     ```
 
 === "MacOS"
 
-    ``` c++
-    #include <iostream>
-
-    int main(void) {
-      std::cout << "Hello world!" << std::endl;
-      return 0;
-    }
+    ``` bash title="Install Gookme"
+    curl -sSL https://raw.githubusercontent.com/LMaxence/gookme/main/scripts/install.sh | bash
     ```
 === "Windows"
 
-    ``` c++
-    #include <iostream>
-
-    int main(void) {
-      std::cout << "Hello world!" << std::endl;
-      return 0;
-    }
+    ``` bash title="Install Gookme"
+    Invoke-WebRequest -Uri https://raw.githubusercontent.com/LMaxence/gookme/main/scripts/install.ps1 -OutFile install.ps1
+    .\install.ps1
     ```
 
 ## Configuration
