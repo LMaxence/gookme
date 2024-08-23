@@ -20,7 +20,11 @@ jobs:
       - name: Create temporary directory
         run: mkdir -p ${{ github.workspace }}/tmp
       - name: Run Golang tests
-        run: go test -coverprofile cover.out -covermode count $(go list -f '{{.Dir}}/...' -m)
+        run: go test -coverprofile=coverage.txt $(go list -f '{{.Dir}}/...' -m)
         env:
           TMPDIR: ${{ github.workspace }}/tmp
+      - name: Upload results to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
   
