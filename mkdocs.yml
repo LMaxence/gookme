@@ -1,0 +1,68 @@
+site_name: Gookme Docs
+site_url: https://gook.me
+site_author: M.L.
+site_description: >-
+  A pre-commit tool designed for monorepos. Successor of Mookme.
+
+# Repository
+repo_name: lmaxence/gookme
+repo_url: https://github.com/lmaxence/gookme
+
+# Copyright
+copyright: Copyright &copy; 2024 M.L.
+
+theme:
+  name: material
+  logo: assets/logo.svg
+
+  features:
+    - content.tabs.link
+
+  palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/link
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: white
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: teal
+      toggle:
+        icon: material/toggle-switch-off
+        name: Switch to system preference
+
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+  favicon: assets/favicon.ico
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+      use_pygments: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+
+# Page tree
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Features: features.md
+  - Examples: examples.md
+  - Reference: reference.md
+
