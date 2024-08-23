@@ -104,12 +104,12 @@ func LoadHooksConfiguration(directory string, hookType HookType) ([]Hook, error)
 		return nil, err
 	}
 
+	hooks := make([]Hook, 0)
+
 	if len(matches) == 0 {
 		logger.Infof("No hooks configuration found for hook type %s", hookType)
-		return nil, nil
+		return hooks, nil
 	}
-
-	hooks := make([]Hook, 0, len(matches))
 
 	for _, match := range matches {
 		path := filepath.Join(directory, match)
