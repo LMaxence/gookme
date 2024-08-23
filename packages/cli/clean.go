@@ -49,6 +49,7 @@ func cleanHookScriptFile(
 		logger.Trace(content)
 	} else {
 		logger.Infof("Script file %s does not exist", hookType)
+		return nil
 	}
 
 	logger.Debugf("Writing script to %s hook script file", hookType)
@@ -67,16 +68,12 @@ func cleanHookScriptFile(
 		}
 	}
 
-	logger.Infof("Successfully created or updated %s hook script", hookType)
+	logger.Infof("Successfully cleaned %s hook script", hookType)
 	return nil
 }
 
 func clean() error {
-
-	logger.Info("Cleaning hooks")
-
 	for _, hookType := range configuration.ALL_HOOKS {
-		logger.Infof("Cleaning %s hook", hookType)
 		err := cleanHookScriptFile(string(hookType))
 		if err != nil {
 			return err
