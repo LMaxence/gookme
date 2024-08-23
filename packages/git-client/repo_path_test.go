@@ -1,7 +1,7 @@
 package gitclient
 
 import (
-	"os/exec"
+	"os"
 	"strings"
 	"testing"
 
@@ -31,7 +31,7 @@ func TestGetRepoPathWithStart(t *testing.T) {
 
 func TestGetRepoPathExitCode1(t *testing.T) {
 	// Create a temporary directory that is not a git repository
-	out, err := exec.Command("mktemp", "-d").Output()
+	out, err := os.MkdirTemp("/tmp", "gookme-tmp-*")
 	assert.NoError(t, err)
 	temporaryDirectory := strings.TrimSpace(string(out))
 

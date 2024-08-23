@@ -56,26 +56,29 @@ func GetNotStagedFiles(dirPath *string, delimiter *GitRefDelimiter) ([]string, e
 		return nil, err
 	}
 
-	var from string
-	var to string
-	if delimiter == nil {
-		from = ""
-		to = ""
-	} else {
-		from = delimiter.From
-		to = delimiter.To
-	}
+	var out string
 
-	out, err := execCommandAtPath(
-		dirPath,
-		"git",
-		"diff",
-		"--name-only",
-		"--diff-filter=d",
-		fmt.Sprintf("--line-prefix=%s", root+"/"),
-		from,
-		to,
-	)
+	if delimiter == nil {
+		out, err = execCommandAtPath(
+			dirPath,
+			"git",
+			"diff",
+			"--name-only",
+			"--diff-filter=d",
+			fmt.Sprintf("--line-prefix=%s", root+"/"),
+		)
+	} else {
+		out, err = execCommandAtPath(
+			dirPath,
+			"git",
+			"diff",
+			"--name-only",
+			"--diff-filter=d",
+			fmt.Sprintf("--line-prefix=%s", root+"/"),
+			delimiter.From,
+			delimiter.To,
+		)
+	}
 
 	if err != nil {
 		return nil, err

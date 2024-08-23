@@ -1,4 +1,4 @@
-name: golangci-lint
+name: CI Lint
 
 on:
   pull_request:

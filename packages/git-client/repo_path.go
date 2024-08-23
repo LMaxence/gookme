@@ -9,6 +9,7 @@ import (
 // for the current working directory.
 func GetRepoPath(start *string) (string, error) {
 	// If the start path is not provided, use the current working directory
+
 	if start == nil {
 		path, err := os.Getwd()
 		if err != nil {

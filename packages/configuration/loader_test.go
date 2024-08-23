@@ -39,7 +39,7 @@ func TestLoadHooksConfiguration(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Create a configuration file
-	err = helpers.WriteFile(directory, "pre-commit.json", `{"steps": [{"name": "step1", "command": "echo 'Hello World'"}]}`)
+	err = helpers.WriteFile(filepath.Join(directory, "hooks"), "pre-commit.json", `{"steps": [{"name": "step1", "command": "echo 'Hello World'"}]}`)
 	assert.NoError(t, err)
 
 	// Call the function
@@ -58,7 +58,7 @@ func TestLoadNestedHooksConfiguration(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Create a configuration file
-	err = helpers.WriteFile(filepath.Join(directory, "packages/a"), "pre-commit.json", `{"steps": [{"name": "step1", "command": "echo 'Hello World'"}]}`)
+	err = helpers.WriteFile(filepath.Join(directory, "packages", "a", "hooks"), "pre-commit.json", `{"steps": [{"name": "step1", "command": "echo 'Hello World'"}]}`)
 	assert.NoError(t, err)
 
 	// Call the function
@@ -89,7 +89,7 @@ func TestLoadConfiguration(t *testing.T) {
 	err = helpers.WriteFile(directory, ".gookme.json", `{"onModifiedFiles": "addAndCommit"}`)
 	assert.NoError(t, err)
 
-	err = helpers.WriteFile(directory, "pre-commit.json", `{"steps": [{"name": "step1", "command": "echo 'Hello World'"}]}`)
+	err = helpers.WriteFile(filepath.Join(directory, "hooks"), "pre-commit.json", `{"steps": [{"name": "step1", "command": "echo 'Hello World'"}]}`)
 	assert.NoError(t, err)
 
 	config, err := LoadConfiguration(directory, PreCommit)
