@@ -34,7 +34,10 @@ func TestFilterScheduledHooksWithChangeset(t *testing.T) {
 }
 
 func TestFilterScheduledHooksWithLargerChangeset(t *testing.T) {
-	changedPaths := []string{"/packages/path1/somefile.go", "/packages/path2/somefile.go"}
+	changedPaths := []string{
+		"/packages/path1/somefile.go",
+		"/packages/path2/somefile.go",
+	}
 	hooks := []configuration.Hook{
 		{
 			Path:  "/packages/path1",
@@ -71,25 +74,37 @@ var filterChangesetWithPrefixTestCases = []struct {
 	expected     []string
 }{
 	{
-		changedPaths: []string{"/packages/path1/somefile.go", "/packages/path2/somefile.go"},
-		prefix:       "/packages/path1",
-		expected:     []string{"/packages/path1/somefile.go"},
+		changedPaths: []string{
+			"/packages/path1/somefile.go",
+			"/packages/path2/somefile.go",
+		},
+		prefix:   "/packages/path1",
+		expected: []string{"/packages/path1/somefile.go"},
 	},
 	{
-		changedPaths: []string{"/packages/path1/somefile.go", "/packages/path2/somefile.go"},
-		prefix:       "/packages/path2",
-		expected:     []string{"/packages/path2/somefile.go"},
+		changedPaths: []string{
+			"/packages/path1/somefile.go",
+			"/packages/path2/somefile.go",
+		},
+		prefix:   "/packages/path2",
+		expected: []string{"/packages/path2/somefile.go"},
 	},
 	{
-		changedPaths: []string{"/packages/path1/somefile.go", "/packages/path2/somefile.go"},
-		prefix:       "/packages/path3",
-		expected:     []string{},
+		changedPaths: []string{
+			"/packages/path1/somefile.go",
+			"/packages/path2/somefile.go",
+		},
+		prefix:   "/packages/path3",
+		expected: []string{},
 	},
 }
 
 func TestFilterChangesetWithPrefix(t *testing.T) {
 	for _, testCase := range filterChangesetWithPrefixTestCases {
-		filteredPaths := filterChangesetWithPrefix(testCase.changedPaths, testCase.prefix)
+		filteredPaths := filterChangesetWithPrefix(
+			testCase.changedPaths,
+			testCase.prefix,
+		)
 		assert.Equal(t, testCase.expected, filteredPaths)
 	}
 }
@@ -100,30 +115,48 @@ var filterChangesetWithPatternTestCases = []struct {
 	expected     []string
 }{
 	{
-		changedPaths: []string{"/packages/path1/somefile.go", "/packages/path1/somefile.json"},
-		pattern:      "*.json",
-		expected:     []string{"/packages/path1/somefile.json"},
+		changedPaths: []string{
+			"/packages/path1/somefile.go",
+			"/packages/path1/somefile.json",
+		},
+		pattern:  "*.json",
+		expected: []string{"/packages/path1/somefile.json"},
 	},
 	{
-		changedPaths: []string{"/packages/path1/somefile.go", "/packages/path1/somefile.json"},
-		pattern:      "test/*.json",
-		expected:     []string{},
+		changedPaths: []string{
+			"/packages/path1/somefile.go",
+			"/packages/path1/somefile.json",
+		},
+		pattern:  "test/*.json",
+		expected: []string{},
 	},
 	{
-		changedPaths: []string{"/packages/path1/somefile.go", "/packages/path1/somefile.json"},
-		pattern:      "packages/path1/*.json",
-		expected:     []string{"/packages/path1/somefile.json"},
+		changedPaths: []string{
+			"/packages/path1/somefile.go",
+			"/packages/path1/somefile.json",
+		},
+		pattern:  "packages/path1/*.json",
+		expected: []string{"/packages/path1/somefile.json"},
 	},
 	{
-		changedPaths: []string{"/packages/path1/somefile.go", "/packages/path1/somefile.json"},
-		pattern:      "*.{go,json}",
-		expected:     []string{"/packages/path1/somefile.go", "/packages/path1/somefile.json"},
+		changedPaths: []string{
+			"/packages/path1/somefile.go",
+			"/packages/path1/somefile.json",
+		},
+		pattern: "*.{go,json}",
+		expected: []string{
+			"/packages/path1/somefile.go",
+			"/packages/path1/somefile.json",
+		},
 	},
 }
 
 func TestFilterChangesetWithPatter(t *testing.T) {
 	for _, testCase := range filterChangesetWithPatternTestCases {
-		filteredPaths, err := filterChangesetWithPattern(testCase.changedPaths, testCase.pattern)
+		filteredPaths, err := filterChangesetWithPattern(
+			testCase.changedPaths,
+			testCase.pattern,
+		)
 		assert.Nil(t, err)
 		assert.Equal(t, testCase.expected, filteredPaths)
 	}
@@ -168,32 +201,50 @@ var filterStepsWithOnlyOnTestCases = []struct {
 	{
 		changedPaths: []string{"/packages/path1/somefile.go"},
 		hooks: []configuration.Hook{
-			fixtureHookConfiguration("/packages/path1", []*string{&goStarPattern}),
+			fixtureHookConfiguration(
+				"/packages/path1",
+				[]*string{&goStarPattern},
+			),
 		},
 		expected: []configuration.Hook{
-			fixtureHookConfiguration("/packages/path1", []*string{&goStarPattern}),
+			fixtureHookConfiguration(
+				"/packages/path1",
+				[]*string{&goStarPattern},
+			),
 		},
 	},
 	{
 		changedPaths: []string{"/packages/path1/somefile.json"},
 		hooks: []configuration.Hook{
-			fixtureHookConfiguration("/packages/path1", []*string{&goStarPattern}),
+			fixtureHookConfiguration(
+				"/packages/path1",
+				[]*string{&goStarPattern},
+			),
 		},
 		expected: []configuration.Hook{},
 	},
 	{
 		changedPaths: []string{"/packages/path1/somefile.json"},
 		hooks: []configuration.Hook{
-			fixtureHookConfiguration("/packages/path1", []*string{&somefileStarPattern}),
+			fixtureHookConfiguration(
+				"/packages/path1",
+				[]*string{&somefileStarPattern},
+			),
 		},
 		expected: []configuration.Hook{
-			fixtureHookConfiguration("/packages/path1", []*string{&somefileStarPattern}),
+			fixtureHookConfiguration(
+				"/packages/path1",
+				[]*string{&somefileStarPattern},
+			),
 		},
 	},
 	{
 		changedPaths: []string{"/packages/path1/some-other-file.json"},
 		hooks: []configuration.Hook{
-			fixtureHookConfiguration("/packages/path1", []*string{&somefileStarPattern}),
+			fixtureHookConfiguration(
+				"/packages/path1",
+				[]*string{&somefileStarPattern},
+			),
 		},
 		expected: []configuration.Hook{},
 	},
@@ -201,7 +252,10 @@ var filterStepsWithOnlyOnTestCases = []struct {
 
 func TestFilterStepsWithOnlyOn(t *testing.T) {
 	for _, testCase := range filterStepsWithOnlyOnTestCases {
-		filteredHooks := FilterStepsWithOnlyOn(testCase.changedPaths, testCase.hooks)
+		filteredHooks := FilterStepsWithOnlyOn(
+			testCase.changedPaths,
+			testCase.hooks,
+		)
 
 		assert.Equal(t, len(testCase.expected), len(filteredHooks))
 		for i, expectedHook := range testCase.expected {
