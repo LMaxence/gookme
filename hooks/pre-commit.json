@@ -8,7 +8,7 @@
     },
     {
       "name": "Code quality",
-      "command": "golangci-lint run $(go list -f '{{.Dir}}/...' -m)",
+      "command": "golangci-lint run ./...",
       "onlyOn": "*.go"
     },
     {
