@@ -150,6 +150,9 @@ func (h *HookExecutor) RunStep(step *configuration.Step) {
 	h.onStepStatusChange(step, StepExecutionStatusRunning)
 
 	cmd := strings.ReplaceAll(step.Command, "$1", strings.Join(h.gitCommandArguments, " "))
+	cmd = strings.ReplaceAll(cmd, "$MATCHED_FILES", strings.Join(step.Files, " "))
+	cmd = strings.ReplaceAll(cmd, "$PACKAGE_FILES", strings.Join(h.hook.Files, ""))
+
 	command := exec.Command("sh", "-c", cmd)
 	command.Dir = h.hook.Path
 

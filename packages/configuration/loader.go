@@ -162,6 +162,7 @@ func LoadHooksConfiguration(directory string, hookType HookType) ([]Hook, error)
 					OnlyOn:              step.OnlyOn,
 					From:                step.From,
 					ID:                  uuid.NewString(),
+					Files:               make([]string, 0),
 				})
 			}
 
@@ -169,6 +170,7 @@ func LoadHooksConfiguration(directory string, hookType HookType) ([]Hook, error)
 
 		hooks = append(hooks, Hook{
 			Path:  filepath.Dir(filepath.Dir(path)),
+			Files: make([]string, 0),
 			Steps: steps,
 		})
 	}

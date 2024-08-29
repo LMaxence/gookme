@@ -76,10 +76,14 @@ A set of arguments is provided by Mookme, that can be directly used in the hooks
 
 ````json title="hooks/commit-msg.json"
 {
-    "command": "run-something $1" // Will be replaced with the value of `args`
+    "command": "run-something $1" // (1)!
+    "command": "run-something $MATCHED_FILES" // (2)!
+    "command": "run-something $PACKAGE_FILES" // (3)!
 }
 ````
 
-- `$1`
+1. The argument being passed by git to the hook file. See [the Git documentation on the hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) for more details about what it contains depending on the hook type being executed.
 
-The argument being passed by git to the hook file. See [the Git documentation on the hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) for more details about what it contains depending on the hook type being executed.
+2. The list of changed files matched by the onlyOn option of this step, separated by a space. If the onlyOn option is not set, it will be replaced with an empty string.
+
+3. The list of changed files in the package folder, separated by a space.

@@ -60,8 +60,9 @@ func FilterHooksWithChangeset(
 	// If the hook is not in the changeset, skip it
 
 	for _, hook := range hooks {
-		matchedPaths := filterChangesetWithPrefix(changedPaths, hook.Path)
-		if len(matchedPaths) > 0 {
+		hook.Files = append(hook.Files, filterChangesetWithPrefix(changedPaths, hook.Path)...)
+
+		if len(hook.Files) > 0 {
 			filtered = append(filtered, hook)
 		} else {
 			logger.Debugf("Hook %s did not match any file, dropping", hook.Path)
@@ -97,8 +98,9 @@ func FilterStepsWithOnlyOn(
 			if err != nil {
 				continue
 			}
+			step.Files = append(step.Files, changedPathsWithPattern...)
 
-			if len(changedPathsWithPattern) > 0 {
+			if len(step.Files) > 0 {
 				steps = append(steps, step)
 			} else {
 				logger.Debugf("Step %s:%s did not match any file using pattern %s, dropping", step.PackageRelativePath, step.Name, *onlyOn)

@@ -29,4 +29,5 @@ type Step struct {
 	Serial              bool
 	From                *string
 	PackageRelativePath string
+	Files               []string
 }

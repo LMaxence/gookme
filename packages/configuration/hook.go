@@ -49,5 +49,6 @@ var ALL_HOOKS_STRING = []string{
 
 type Hook struct {
 	Path  string
+	Files []string
 	Steps []Step
 }
