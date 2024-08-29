@@ -12,39 +12,39 @@ type HookConfiguration struct {
 type HookType string
 
 const (
-	PreCommit     HookType = "pre-commit"
-	PrepareCommit HookType = "prepare-commit-msg"
-	CommitMsg     HookType = "commit-msg"
-	PostCommit    HookType = "post-commit"
-	PostMerge     HookType = "post-merge"
-	PostRewrite   HookType = "post-rewrite"
-	PreRebase     HookType = "pre-rebase"
-	PostCheckout  HookType = "post-checkout"
-	PrePush       HookType = "pre-push"
+	PreCommitHookType     HookType = "pre-commit"
+	PrepareCommitHookType HookType = "prepare-commit-msg"
+	CommitMsgHookType     HookType = "commit-msg"
+	PostCommitHookType    HookType = "post-commit"
+	PostMergeHookType     HookType = "post-merge"
+	PostRewriteHookType   HookType = "post-rewrite"
+	PreRebaseHookType     HookType = "pre-rebase"
+	PostCheckoutHookType  HookType = "post-checkout"
+	PrePushHookType       HookType = "pre-push"
 )
 
 var ALL_HOOKS = []HookType{
-	PreCommit,
-	PrepareCommit,
-	CommitMsg,
-	PostCommit,
-	PostMerge,
-	PostRewrite,
-	PreRebase,
-	PostCheckout,
-	PrePush,
+	PreCommitHookType,
+	PrepareCommitHookType,
+	CommitMsgHookType,
+	PostCommitHookType,
+	PostMergeHookType,
+	PostRewriteHookType,
+	PreRebaseHookType,
+	PostCheckoutHookType,
+	PrePushHookType,
 }
 
 var ALL_HOOKS_STRING = []string{
-	string(PreCommit),
-	string(PrepareCommit),
-	string(CommitMsg),
-	string(PostCommit),
-	string(PostMerge),
-	string(PostRewrite),
-	string(PreRebase),
-	string(PostCheckout),
-	string(PrePush),
+	string(PreCommitHookType),
+	string(PrepareCommitHookType),
+	string(CommitMsgHookType),
+	string(PostCommitHookType),
+	string(PostMergeHookType),
+	string(PostRewriteHookType),
+	string(PreRebaseHookType),
+	string(PostCheckoutHookType),
+	string(PrePushHookType),
 }
 
 type Hook struct {

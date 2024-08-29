@@ -9,7 +9,7 @@ import (
 
 func validateHookType(value string) (configuration.HookType, error) {
 	switch configuration.HookType(value) {
-	case configuration.PreCommit, configuration.CommitMsg, configuration.PostCheckout, configuration.PostMerge, configuration.PostRewrite, configuration.PrePush, configuration.PreRebase, configuration.PostCommit, configuration.PrepareCommit:
+	case configuration.PreCommitHookType, configuration.CommitMsgHookType, configuration.PostCheckoutHookType, configuration.PostMergeHookType, configuration.PostRewriteHookType, configuration.PrePushHookType, configuration.PreRebaseHookType, configuration.PostCommitHookType, configuration.PrepareCommitHookType:
 		return configuration.HookType(value), nil
 	default:
 		return "", fmt.Errorf("invalid HookType: %s. Accepted values are: %s", value, strings.Join(configuration.ALL_HOOKS_STRING, ", "))
