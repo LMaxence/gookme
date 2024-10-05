@@ -17,6 +17,7 @@ theme:
 
   features:
     - content.tabs.link
+    - content.code.annotate
 
   palette:
     - media: "(prefers-color-scheme)"

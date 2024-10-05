@@ -105,6 +105,14 @@ With `Gookme`, your hooks are stored in JSON files called `{hook-type}.json` whe
 
 3. Other selections (`onlyOn` for instance) are applied on each step of each package, based on the list of paths attached to the package and it's steps.
 
+!!! tip
+    Depending on the hook type being executed, or the arguments passed to the command, the list of paths can be different.
+
+    - The hook type `pre-push` will consider the list of files to be pushed to the remote server
+    - The hook type `post-commit` will consider the list of files included in the last commit
+    - If the `run` command argument --from and --to are used, the list of paths will be the list of files changed between the two commits
+    - All other hook types will use the list of files changed in the current commit, and staged
+
 ### Example of hook file
 
 Your hooks are defined in simple json files.

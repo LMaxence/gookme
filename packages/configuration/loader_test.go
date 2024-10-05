@@ -43,7 +43,7 @@ func TestLoadHooksConfiguration(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Call the function
-	hooks, err := LoadHooksConfiguration(directory, PreCommit)
+	hooks, err := LoadHooksConfiguration(directory, PreCommitHookType)
 	assert.NoError(t, err)
 
 	assert.Len(t, hooks, 1)
@@ -62,7 +62,7 @@ func TestLoadNestedHooksConfiguration(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Call the function
-	hooks, err := LoadHooksConfiguration(directory, PreCommit)
+	hooks, err := LoadHooksConfiguration(directory, PreCommitHookType)
 	assert.NoError(t, err)
 
 	assert.Len(t, hooks, 1)
@@ -76,7 +76,7 @@ func TestLoadHooksConfigurationFromEmptyDirectory(t *testing.T) {
 	directory, err := helpers.SetupTmpGit()
 	assert.NoError(t, err)
 
-	hooks, err := LoadHooksConfiguration(directory, PreCommit)
+	hooks, err := LoadHooksConfiguration(directory, PreCommitHookType)
 	assert.NoError(t, err)
 	assert.Equal(t, []Hook{}, hooks)
 }
@@ -92,7 +92,7 @@ func TestLoadConfiguration(t *testing.T) {
 	err = helpers.WriteFile(filepath.Join(directory, "hooks"), "pre-commit.json", `{"steps": [{"name": "step1", "command": "echo 'Hello World'"}]}`)
 	assert.NoError(t, err)
 
-	config, err := LoadConfiguration(directory, PreCommit)
+	config, err := LoadConfiguration(directory, PreCommitHookType)
 
 	assert.NoError(t, err)
 	assert.NotNil(t, config)

@@ -7,8 +7,8 @@ import (
 
 	"github.com/LMaxence/gookme/packages/configuration"
 	"github.com/LMaxence/gookme/packages/executor"
+	"github.com/LMaxence/gookme/packages/filters"
 	gitclient "github.com/LMaxence/gookme/packages/git-client"
-	"github.com/LMaxence/gookme/packages/scheduler"
 	"github.com/urfave/cli/v2"
 )
 
@@ -21,6 +21,26 @@ type RunCommandArguments struct {
 	GitCommandArgs []string
 	From           string
 	To             string
+}
+
+func selectResolvingStrategy(dir string, args *RunCommandArguments) filters.ChangesetResolvingStrategy {
+	var changesetResolvingStrategy filters.ChangesetResolvingStrategy
+
+	if args.From != "" && args.To != "" {
+		logger.Debugf("Using FromToChangesResolvingStrategy")
+		changesetResolvingStrategy = filters.NewFromToChangesResolvingStrategy(dir, args.From, args.To)
+	} else if args.HookType == configuration.PrePushHookType {
+		logger.Debugf("Using PrePushChangesResolvingStrategy")
+		changesetResolvingStrategy = filters.NewStagedChangesResolvingStrategy(dir)
+	} else if args.HookType == configuration.PostCommitHookType {
+		logger.Debugf("Using StagedChangesResolvingStrategy")
+		changesetResolvingStrategy = filters.NewStagedChangesResolvingStrategy(dir)
+	} else {
+		logger.Debugf("Using StagedChangesResolvingStrategy")
+		changesetResolvingStrategy = filters.NewStagedChangesResolvingStrategy(dir)
+	}
+
+	return changesetResolvingStrategy
 }
 
 func parseRunCommandArguments(cContext *cli.Context) (*RunCommandArguments, error) {
@@ -52,24 +72,15 @@ func run(args RunCommandArguments) error {
 		return err
 	}
 
-	var delimiter *gitclient.GitRefDelimiter
-	if args.From != "" && args.To != "" {
-		logger.Debugf("Setting Git ref delimiter from %s to %s", args.From, args.To)
-		delimiter = &gitclient.GitRefDelimiter{
-			From: args.From,
-			To:   args.To,
-		}
-	}
-
-	changedPaths, err := gitclient.GetStagedFiles(&dir, delimiter)
-	logger.Tracef("Staged files: %v", changedPaths)
+	changedPaths, err := selectResolvingStrategy(dir, &args).Resolve()
+	logger.Tracef("Resolved changeset: %v", changedPaths)
 	if err != nil {
 		logger.Errorf("Error while getting staged files: %s", err)
 		return err
 	}
 
-	conf.Hooks = scheduler.FilterHooksWithChangeset(changedPaths, conf.Hooks)
-	conf.Hooks = scheduler.FilterStepsWithOnlyOn(changedPaths, conf.Hooks)
+	conf.Hooks = filters.FilterHooksWithChangeset(changedPaths, conf.Hooks)
+	conf.Hooks = filters.FilterStepsWithOnlyOn(changedPaths, conf.Hooks)
 
 	nSteps := 0
 	for _, hook := range conf.Hooks {
