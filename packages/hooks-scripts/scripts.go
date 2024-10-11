@@ -1,5 +1,12 @@
 package hooksscripts
 
+/* ====================================================================
+
+This file contains utility functions to parse, modify or generate scripts
+with gookme specific instructions.
+
+==================================================================== */
+
 import (
 	"errors"
 	"strings"
@@ -20,6 +27,7 @@ type ScriptVariables struct {
 	Version  string
 }
 
+// GenerateScript generates a script from a template and the provided variables
 func GenerateScript(variables *ScriptVariables, template string) string {
 	script := template
 
@@ -29,7 +37,8 @@ func GenerateScript(variables *ScriptVariables, template string) string {
 	return script
 }
 
-// Look for a script in the provided content, and parse it to get the version it has been generated with
+// ParseScriptVersion Looks for a script in the provided content,
+// and parse it to get the version it has been generated with
 func ParseScriptVersion(content string) (string, error) {
 	// Look for the version of the script
 	version := ""
@@ -48,7 +57,7 @@ func ParseScriptVersion(content string) (string, error) {
 	return version, ErrorScriptVersionNotFound
 }
 
-// Remove the gookme script from the provided content
+// RemoveExistingGookmeScript removes the gookme script from the provided content
 func RemoveExistingGookmeScript(
 	content string,
 ) string {
@@ -83,6 +92,7 @@ func RemoveExistingGookmeScript(
 	return strings.Join(append(lines[:startIndex], lines[endIndex+1:]...), "\n")
 }
 
+// AddGookmeScript adds the gookme script to the provided content
 func AddGookmeScript(
 	content string,
 	scriptscriptVariables *ScriptVariables,

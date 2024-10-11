@@ -4,7 +4,6 @@ YELLOW := $(shell tput -Txterm setaf 3)
 WHITE  := $(shell tput -Txterm setaf 7)
 RESET  := $(shell tput -Txterm sgr0)
 
-
 TARGET_MAX_CHAR_NUM=15
 ## Show help.
 help:

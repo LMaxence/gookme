@@ -3,15 +3,17 @@ package logging
 import (
 	"os"
 
-	"github.com/sirupsen/logrus"
-	log "github.com/sirupsen/logrus"
+	logrus "github.com/sirupsen/logrus"
 )
 
-func readLevelFromEnv() log.Level {
-	level, err := log.ParseLevel(os.Getenv("LOG_LEVEL"))
+// readLevelFromEnv reads the log level from the LOG_LEVEL environment variable
+// and returns the corresponding logrus level. If the LOG_LEVEL environment variable
+// is not set, the default level is INFO.
+func readLevelFromEnv() logrus.Level {
+	level, err := logrus.ParseLevel(os.Getenv("LOG_LEVEL"))
 
 	if err != nil {
-		return log.InfoLevel
+		return logrus.InfoLevel
 	}
 
 	return level
@@ -23,35 +25,39 @@ func readDebugModeFromEnv() bool {
 }
 
 type Logger struct {
-	fields log.Fields
+	fields logrus.Fields
 }
 
+// NewLogger creates a new logger with the provided name
 func NewLogger(name string) *Logger {
 	level := readLevelFromEnv()
-	log.SetLevel(level)
+	logrus.SetLevel(level)
 
-	log.SetFormatter(&log.TextFormatter{
+	logrus.SetFormatter(&logrus.TextFormatter{
 		DisableTimestamp:       true,
 		DisableLevelTruncation: true,
 		PadLevelText:           true,
 	})
 
 	return &Logger{
-		fields: log.Fields{
+		fields: logrus.Fields{
 			"name": name,
 		},
 	}
 }
 
+// applyFields applies the fields stored in the logger to the logrus entry
 func (l *Logger) applyFields() *logrus.Entry {
 	if !readDebugModeFromEnv() {
-		return log.WithFields(log.Fields{})
+		return logrus.WithFields(logrus.Fields{})
 	}
-	return log.WithFields(l.fields)
+	return logrus.WithFields(l.fields)
 }
 
+// WithFields returns a new logger with the provided fields
+// added to the fields of the current logger instance
 func (l *Logger) WithFields(fields map[string]string) *Logger {
-	newFields := log.Fields{}
+	newFields := logrus.Fields{}
 
 	for key, value := range l.fields {
 		newFields[key] = value

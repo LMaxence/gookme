@@ -1,5 +1,12 @@
 package hooksscripts
 
+/* ====================================================================
+
+This file contains utility functions to check if a file or folder exists,
+and to create them if they don't.
+
+===================================================================== */
+
 import (
 	"os"
 	"path"
@@ -22,6 +29,7 @@ func ScriptFileExists(gitFolderPath string, hookName configuration.HookType) (bo
 	return false, err
 }
 
+// AssertFolder checks if the folder at the provided path exists, if not it creates it
 func AssertFolder(path string) error {
 	// Check if a folder exists, if not create it
 	logger.Debugf("Checking if hooks folder exists at path %s", path)
@@ -43,6 +51,7 @@ func AssertFolder(path string) error {
 	return nil
 }
 
+// AssertFile checks if the file at the provided path exists, if not it creates it
 func AssertFile(path string) error {
 	// Check if a file exists, if not create it
 	logger.Debugf("Checking if file exists at path %s", path)

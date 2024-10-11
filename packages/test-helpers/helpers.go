@@ -12,6 +12,7 @@ import (
 
 var logger = logging.NewLogger("test-helpers")
 
+// directoryExists checks if a directory exists and is a directory
 func directoryExists(path string) bool {
 	info, err := os.Stat(path)
 	if os.IsNotExist(err) {
@@ -20,6 +21,7 @@ func directoryExists(path string) bool {
 	return info.IsDir()
 }
 
+// CreateTemporaryDirectory creates a temporary directory and returns its path
 func CreateTemporaryDirectory() (string, error) {
 	// Create a temporary directory
 	directory, err := exec.Command("mktemp", "-d").Output()
@@ -34,6 +36,8 @@ func CreateTemporaryDirectory() (string, error) {
 	path = "/private" + path
 
 	exists := directoryExists(path)
+
+	// This is a workaround for creating temporary directories within GitHub Actions
 	if !exists {
 		logger.Warn("mktemp command failed, falling back to os.MkdirTemp")
 
@@ -56,6 +60,8 @@ func CreateTemporaryDirectory() (string, error) {
 	return path, nil
 }
 
+// SetupTmpGit creates a temporary directory and initializes a git repository in it
+// It returns the path to the temporary directory to be later on used within tests
 func SetupTmpGit() (string, error) {
 	path, err := CreateTemporaryDirectory()
 	if err != nil {
@@ -74,6 +80,7 @@ func SetupTmpGit() (string, error) {
 	return path, nil
 }
 
+// WriteFile writes a file with the provided content in the provided directory
 func WriteFile(directory, filename, content string) error {
 	// Create directory if it does not exist
 	err := os.MkdirAll(directory, os.ModePerm)

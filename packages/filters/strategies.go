@@ -1,7 +1,59 @@
 package filters
 
-import gitclient "github.com/LMaxence/gookme/packages/git-client"
+/* ====================== Strategies ======================
 
+Strategies denote how Gookme will select files to account for
+in the changeset. This changeset is therefore used to determine
+whether a hook should be executed or not.
+
+=========================================================== */
+
+import (
+	configuration "github.com/LMaxence/gookme/packages/configuration"
+	gitclient "github.com/LMaxence/gookme/packages/git-client"
+)
+
+// StrategySelectionParameters is a struct that holds the parameters for selecting a strategy.
+type StrategySelectionParameters struct {
+	// HookType is the type of the hook that is being executed.
+	HookType configuration.HookType
+	// From is the Git ref from which the changeset should be calculated.
+	From string
+	// To is the Git ref to which the changeset should be calculated.
+	To string
+}
+
+// SelectResolvingStrategy selects the appropriate changeset resolving strategy base on the parameters.
+//
+// When the parameters `from` and `to` are set to a non-empty string, the `FromToChangesResolvingStrategy` is used
+// regardless of the hook type.
+//
+// When the hook type is `PrePushHookType`, the `PrePushChangesResolvingStrategy` is used.
+//
+// When the hook type is `PostCommitHookType`, the `StagedChangesResolvingStrategy` is used.
+//
+// Otherwise, the `StagedChangesResolvingStrategy` is used.
+func SelectResolvingStrategy(dir string, parameters *StrategySelectionParameters) ChangesetResolvingStrategy {
+	var changesetResolvingStrategy ChangesetResolvingStrategy
+
+	if parameters.From != "" && parameters.To != "" {
+		logger.Debugf("Using FromToChangesResolvingStrategy")
+		changesetResolvingStrategy = NewFromToChangesResolvingStrategy(dir, parameters.From, parameters.To)
+	} else if parameters.HookType == configuration.PrePushHookType {
+		logger.Debugf("Using PrePushChangesResolvingStrategy")
+		changesetResolvingStrategy = NewStagedChangesResolvingStrategy(dir)
+	} else if parameters.HookType == configuration.PostCommitHookType {
+		logger.Debugf("Using StagedChangesResolvingStrategy")
+		changesetResolvingStrategy = NewStagedChangesResolvingStrategy(dir)
+	} else {
+		logger.Debugf("Using StagedChangesResolvingStrategy")
+		changesetResolvingStrategy = NewStagedChangesResolvingStrategy(dir)
+	}
+
+	return changesetResolvingStrategy
+}
+
+// ChangesetResolvingStrategy is an interface that defines a strategy to resolve a changeset.
 type ChangesetResolvingStrategy interface {
 	Resolve() ([]string, error)
 }
@@ -56,23 +108,4 @@ func NewPrePushChangesResolvingStrategy(repositoryPath string) *PrePushChangesRe
 
 func (s *PrePushChangesResolvingStrategy) Resolve() ([]string, error) {
 	return gitclient.GetFilesToBePushed(&s.repositoryPath)
-}
-
-// NCommitsBeforeHeadChangesResolvingStrategy is a changeset resolving strategy that
-// resolves the changeset by looking at the n commits before HEAD.
-
-type NCommitsBeforeHeadChangesResolvingStrategy struct {
-	repositoryPath string
-	n              int
-}
-
-func NewNCommitsBeforeHeadChangesResolvingStrategy(repositoryPath string, n int) *NCommitsBeforeHeadChangesResolvingStrategy {
-	return &NCommitsBeforeHeadChangesResolvingStrategy{
-		repositoryPath: repositoryPath,
-		n:              n,
-	}
-}
-
-func (s *NCommitsBeforeHeadChangesResolvingStrategy) Resolve() ([]string, error) {
-	return gitclient.GetFilesChangedNCommitsBefore(&s.repositoryPath, s.n)
 }

@@ -23,26 +23,6 @@ type RunCommandArguments struct {
 	To             string
 }
 
-func selectResolvingStrategy(dir string, args *RunCommandArguments) filters.ChangesetResolvingStrategy {
-	var changesetResolvingStrategy filters.ChangesetResolvingStrategy
-
-	if args.From != "" && args.To != "" {
-		logger.Debugf("Using FromToChangesResolvingStrategy")
-		changesetResolvingStrategy = filters.NewFromToChangesResolvingStrategy(dir, args.From, args.To)
-	} else if args.HookType == configuration.PrePushHookType {
-		logger.Debugf("Using PrePushChangesResolvingStrategy")
-		changesetResolvingStrategy = filters.NewStagedChangesResolvingStrategy(dir)
-	} else if args.HookType == configuration.PostCommitHookType {
-		logger.Debugf("Using StagedChangesResolvingStrategy")
-		changesetResolvingStrategy = filters.NewStagedChangesResolvingStrategy(dir)
-	} else {
-		logger.Debugf("Using StagedChangesResolvingStrategy")
-		changesetResolvingStrategy = filters.NewStagedChangesResolvingStrategy(dir)
-	}
-
-	return changesetResolvingStrategy
-}
-
 func parseRunCommandArguments(cContext *cli.Context) (*RunCommandArguments, error) {
 	hookType, err := validateHookType(cContext.String("type"))
 	if err != nil {
@@ -72,7 +52,12 @@ func run(args RunCommandArguments) error {
 		return err
 	}
 
-	changedPaths, err := selectResolvingStrategy(dir, &args).Resolve()
+	strategy := filters.SelectResolvingStrategy(dir, &filters.StrategySelectionParameters{
+		HookType: args.HookType,
+		From:     args.From,
+		To:       args.To,
+	})
+	changedPaths, err := strategy.Resolve()
 	logger.Tracef("Resolved changeset: %v", changedPaths)
 	if err != nil {
 		logger.Errorf("Error while getting staged files: %s", err)
