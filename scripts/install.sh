@@ -10,7 +10,7 @@ OS=$(uname | tr '[:upper:]' '[:lower:]')
 # OS is darwin on MacOS and default to linux for all other OSes
 if [ "$OS" == "darwin" ]; then
     echo "Downloading Gookme for MacOS..."
-    OS="macos"
+    OS="darwin"
 else
     echo "Downloading Gookme for Linux..."
     OS="linux"
