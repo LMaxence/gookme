@@ -7,4 +7,4 @@ releasing a new version of the CLI.
 
 ==================================================================== */
 
-const GOOKME_CLI_VERSION = "0.7.1"
+const GOOKME_CLI_VERSION = "0.7.2"

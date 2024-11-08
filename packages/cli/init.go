@@ -182,7 +182,7 @@ func initFn(args InitCommandArguments) error {
 var InitCommand *cli.Command = &cli.Command{
 	Name:    string(InitCommandName),
 	Aliases: []string{"i"},
-	Usage:   "load and run git hooks based on staged Git changes",
+	Usage:   "initialize Git hooks script files to run Gookme",
 	Flags: []cli.Flag{
 		&cli.StringSliceFlag{
 			Name:    "types",
