@@ -7,7 +7,7 @@ BINARY_NAME="gookme"
 
 # Determine the OS and architecture
 OS=$(uname | tr '[:upper:]' '[:lower:]')
-# OS is darwin on MacOS and default to linux for all other OSes
+# OS is darwin on MacOS and defaults to linux for all other OSes
 if [ "$OS" == "darwin" ]; then
     echo "Downloading Gookme for MacOS..."
     OS="darwin"
@@ -42,8 +42,16 @@ curl -L -o "$BINARY_NAME" "$URL"
 # Make the binary executable
 chmod +x "$BINARY_NAME"
 
-# Move the binary to a directory in the PATH
-mv "$BINARY_NAME" "/usr/local/bin/$BINARY_NAME"
+# Create the .local/bin directory if it doesn't exist
+LOCAL_BIN="$HOME/.local/bin"
+if [ ! -d "$LOCAL_BIN" ]; then
+    echo "Creating $LOCAL_BIN directory..."
+    mkdir -p "$LOCAL_BIN"
+fi
 
-gookme --version
+# Move the binary to the .local/bin directory
+mv "$BINARY_NAME" "$LOCAL_BIN/$BINARY_NAME"
+
+# Verify the installation
+"$LOCAL_BIN/$BINARY_NAME" --version
 echo "Successfully installed Gookme."
