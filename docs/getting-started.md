@@ -36,10 +36,10 @@ gookme init --all
 
 ### Selectively setup Gookme
 
-If you want to only setup the hooks for a specific hook type, you can use the `--type` option of the `gookme init` command.
+If you want to only setup the hooks for a specific hook type, you can use the `--types` option of the `gookme init` command.
 
 ```bash title="Initialize Gookme with pre-commit and commit-msg hooks"
-gookme init --type pre-commit,commit-msg
+gookme init --types pre-commit,commit-msg
 ```
 
 ### Removing Gookme from your Git hooks scripts
