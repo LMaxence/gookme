@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/LMaxence/gookme/packages/configuration"
-	"github.com/alecthomas/jsonschema"
+	"github.com/invopop/jsonschema"
 )
 
 func generateGlobalSchema() (string, error) {
