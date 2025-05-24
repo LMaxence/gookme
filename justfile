@@ -43,10 +43,7 @@ hooks:
 alias h := hooks
 
 # Build for all platforms
-build:
-    make build-darwin
-    make build-linux
-    make build-windows
+build: build-darwin build-linux build-windows
 
 alias b := build
 
