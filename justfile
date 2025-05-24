@@ -67,3 +67,18 @@ build-windows:
     make build/gookme-windows-arm64 
 
 alias bw := build-windows
+
+lint:
+    golangci-lint run ./...
+
+alias l := lint
+
+test:
+    go test ./...
+
+alias t := test
+
+# Run all tests
+check: lint test
+
+alias c := check
