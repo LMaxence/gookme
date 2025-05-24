@@ -119,13 +119,14 @@ func (h *HookExecutor) onLogRecord(step *configuration.Step, record string) {
 
 func (h *HookExecutor) onStepStatusChange(step *configuration.Step, status StepExecutionStatus) {
 	logger.Tracef("Step %s (%s) status changed to %s", step.Name, step.ID, status)
-	if status == StepExecutionStatusFailed {
+	switch status {
+	case StepExecutionStatusFailed:
 		logger.Errorf("❌ Step %s failed", step.Name)
-	} else if status == StepExecutionStatusSuccess {
+	case StepExecutionStatusSuccess:
 		logger.Infof("✅ Step %s:%s succeeded", step.PackageRelativePath, step.Name)
-	} else if status == StepExecutionStatusRunning {
+	case StepExecutionStatusRunning:
 		logger.Infof("🏃 Step %s:%s is running", step.PackageRelativePath, step.Name)
-	} else if status == StepExecutionStatusPending {
+	case StepExecutionStatusPending:
 		logger.Infof("⏳ Step %s:%s is pending", step.PackageRelativePath, step.Name)
 	}
 

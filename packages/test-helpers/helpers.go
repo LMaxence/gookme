@@ -93,8 +93,11 @@ func WriteFile(directory, filename, content string) error {
 	if err != nil {
 		return err
 	}
-	defer file.Close()
 
 	_, err = file.WriteString(content)
-	return err
+	if err != nil {
+		return err
+	}
+
+	return file.Close()
 }

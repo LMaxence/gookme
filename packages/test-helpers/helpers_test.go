@@ -41,7 +41,6 @@ func TestWriteFile(t *testing.T) {
 	// Check the content of the file
 	file, err := os.Open(path)
 	assert.NoError(t, err)
-	defer file.Close()
 
 	stat, err := file.Stat()
 	assert.NoError(t, err)
@@ -51,4 +50,7 @@ func TestWriteFile(t *testing.T) {
 	_, err = file.Read(readContent)
 	assert.NoError(t, err)
 	assert.Equal(t, content, string(readContent))
+
+	err = file.Close()
+	assert.NoError(t, err)
 }

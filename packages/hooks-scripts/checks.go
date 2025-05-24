@@ -68,7 +68,11 @@ func AssertFile(path string) error {
 		if err != nil {
 			return err
 		}
-		defer file.Close()
+
+		err = file.Close()
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

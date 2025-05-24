@@ -5,7 +5,7 @@ on:
 
 env:
   GO_VERSION: 1.22.4
-  GOLANGCI_LINT_VERSION: v1.58
+  GOLANGCI_LINT_VERSION: v2.1.6
 
 jobs:
   golangci-lint:
@@ -18,6 +18,6 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v8
         with:
           version: ${{ env.GOLANGCI_LINT_VERSION }}
