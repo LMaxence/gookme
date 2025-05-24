@@ -34,9 +34,7 @@ assets/schemas/steps.schema.json: packages/configuration
 	@echo "Generating steps schema"
 	go run ./cmd/schemas/main.go steps > assets/schemas/steps.schema.json
 
-schemas: assets/schemas/global.schema.json assets/schemas/hooks.schema.json assets/schemas/steps.schema.json
-
-.github/depenbot.yml:
+.github/dependabot.yml:
 	@echo "Generating .github/depenbot.yml"
 	./scripts/generate-dependabot-config.sh
 
@@ -50,10 +48,6 @@ schemas: assets/schemas/global.schema.json assets/schemas/hooks.schema.json asse
 	cp scripts/commit-msg.sh .git/hooks/commit-msg
 	chmod +x .git/hooks/commit-msg
 
-hooks: .git/hooks/pre-commit .git/hooks/commit-msg
-
-assets: schemas .github/depenbot.yml hooks
-
 build/gookme-darwin-amd64:
 	@echo "Building gookme for darwin/amd64"
 	GOOS=darwin GOARCH=amd64 go build -o build/gookme-darwin-amd64 ./cmd/cli
@@ -61,8 +55,6 @@ build/gookme-darwin-amd64:
 build/gookme-darwin-arm64:
 	@echo "Building gookme for darwin/arm64"
 	GOOS=darwin GOARCH=arm64 go build -o build/gookme-darwin-arm64 ./cmd/cli
-
-build-darwin: build/gookme-darwin-amd64 build/gookme-darwin-arm64
 
 build/gookme-linux-amd64:
 	@echo "Building gookme for linux/amd64"
@@ -72,8 +64,6 @@ build/gookme-linux-arm64:
 	@echo "Building gookme for linux/arm64"
 	GOOS=linux GOARCH=arm64 go build -o build/gookme-linux-arm64 ./cmd/cli
 
-build-linux: build/gookme-linux-amd64 build/gookme-linux-arm64
-
 build/gookme-windows-amd64:
 	@echo "Building gookme for windows/amd64"
 	GOOS=windows GOARCH=amd64 go build -o build/gookme-windows-amd64.exe ./cmd/cli
@@ -81,7 +71,3 @@ build/gookme-windows-amd64:
 build/gookme-windows-arm64:
 	@echo "Building gookme for windows/arm64"
 	GOOS=windows GOARCH=arm64 go build -o build/gookme-windows-arm64.exe ./cmd/cli
-
-build-windows: build/gookme-windows-amd64 build/gookme-windows-arm64
-
-build: build-darwin build-linux build-windows
