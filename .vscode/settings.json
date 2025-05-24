@@ -16,5 +16,13 @@
       "fileMatch": ["{pre-commit,commit-msg}.json"],
       "url": "./assets/schemas/hooks.schema.json"
     }
-  ]
+  ],
+
+  "go.lintTool": "golangci-lint",
+  "go.lintFlags": ["--path-mode=abs"],
+  "go.formatTool": "custom",
+  "go.alternateTools": {
+    "customFormatter": "golangci-lint"
+  },
+  "go.formatFlags": ["fmt", "--stdin"]
 }

@@ -66,7 +66,6 @@ func TestGetNotStagedFiles(t *testing.T) {
 	// Write "test" to the file
 	file, err := os.OpenFile(tmpDir+"/file1", os.O_WRONLY, fs.ModePerm)
 	assert.NoError(t, err)
-	defer file.Close()
 
 	_, err = file.WriteString("test")
 	assert.NoError(t, err)
@@ -77,6 +76,8 @@ func TestGetNotStagedFiles(t *testing.T) {
 	// Assert the results
 	assert.NoError(t, err)
 	assert.Contains(t, files, filepath.Join(tmpDir, "file1"))
+
+	assert.NoError(t, file.Close())
 }
 
 func TestGetNotStagedFilesWithNoNotStagedFiles(t *testing.T) {

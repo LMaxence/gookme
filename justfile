@@ -6,10 +6,13 @@ default:
 install:
     go mod download
     go mod tidy
-    go install github.com/conventionalcommit/commitlint@latest
     go install ./cmd/cli
 
 alias i := install
+
+# Run linters
+lint:
+    golangci-lint run
 
 # Generate all assets including schemas, dependabot config, and git hooks
 assets: schemas dependabot hooks
@@ -67,11 +70,6 @@ build-windows:
     make build/gookme-windows-arm64 
 
 alias bw := build-windows
-
-lint:
-    golangci-lint run ./...
-
-alias l := lint
 
 test:
     go test ./...
